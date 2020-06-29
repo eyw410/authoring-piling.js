@@ -3,6 +3,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
+import postcss from 'rollup-plugin-postcss';
+import replace from '@rollup/plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -20,9 +22,12 @@ export default {
 			dev: !production,
 			// we'll extract any component CSS out into
 			// a separate file - better for performance
-			css: css => {
-				css.write('public/build/bundle.css');
-			}
+			// css: css => {
+			// 	css.write('public/build/bundle.css');
+			// },
+
+			// allows you to override styles from within component
+			emitCss: true
 		}),
 
 		// If you have external dependencies installed from
@@ -30,11 +35,32 @@ export default {
 		// some cases you'll need additional configuration -
 		// consult the documentation for details:
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
+
+		// SAMPLE INSTALL
+		// copy({
+		// 	targets: [{
+		// 		src: 'node_modules/bootstrap/dist/**/*',
+		// 		dest: 'public/vendor/bootstrap'
+		// 	}]
+		// }),
+
 		resolve({
 			browser: true,
-			dedupe: ['svelte']
+			dedupe: ['svelte'] // importee => importee === 'svelte' || importee.startsWith('svelte/')
 		}),
 		commonjs(),
+		postcss({
+			extract: true,
+			minimize: true,
+			use: [
+				['sass', {
+					includePaths: [
+						'./theme',
+						'./node_modules'
+					]
+				}]
+			]
+		}),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
@@ -46,7 +72,16 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && terser(),
+
+		replace({
+			// 2 level deep object should be stringify
+			process: JSON.stringify({
+				env: {
+					isProd: production,
+				}
+			}),
+		}),
 	],
 	watch: {
 		clearScreen: false
