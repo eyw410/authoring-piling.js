@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "dev": "rollup -c -w",
-    "start": "rollup -c rollup.config.js && sirv public"
+    "start": "rollup -c -w rollup.config.js && sirv public"
   },
   "dependencies": {
     "@sveltejs/svelte-repl": "^0.2.0",
@@ -15,10 +15,14 @@
     "@rollup/plugin-node-resolve": "^8.0.0",
     "@rollup/plugin-replace": "^2.3.3",
     "@smui/button": "^1.0.0-beta.21",
+    "just-clone": "^3.1.0",
     "node-sass": "^4.14.1",
     "prettier": "^2.0.5",
+    "acorn": "^7.3.1",
     "rollup": "^2.18.1",
     "rollup-plugin-copy": "^3.3.0",
+    "rollup-plugin-css-only": "^2.1.0",
+    "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-postcss": "^3.1.2",
     "rollup-plugin-svelte": "^5.0.3",
