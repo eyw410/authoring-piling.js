@@ -17,7 +17,7 @@
     components: [
       {
         type: "svelte",
-        name: "laa",
+        name: "App",
         source: ""
       }
     ]
@@ -33,7 +33,7 @@
       target: container,
       props: {
         id,
-        // svelteUrl,
+        svelteUrl,
         workersUrl: "workers",
         orientation: windowWidth > 600 ? "columns" : "rows"
       }
