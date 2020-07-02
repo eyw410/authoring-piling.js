@@ -38,7 +38,7 @@
       props: {
         id,
         // svelteUrl,
-        workersUrl: "public/workers",
+        workersUrl: "workers",
         orientation: windowWidth > 600 ? "columns" : "rows"
       }
     });
@@ -128,7 +128,7 @@
 	  --second: #676778;
 	  --back-light: #f6fafd;
 	}
-	
+
 	.repl-outer {
 		position: relative;
 		top: 0;
