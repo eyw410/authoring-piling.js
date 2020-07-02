@@ -132,7 +132,6 @@ async function get_bundle(uid, mode, cache, lookup) {
 
             // importing from (probably) unpkg
             if (importee.startsWith('.')) {
-                console.log(`here is a url importee is ${importee}`);
                 const url = new URL(importee, importer).href;
                 self.postMessage({ type: 'status', uid, message: `resolving ${url}` });
 

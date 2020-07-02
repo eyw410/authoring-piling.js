@@ -13,7 +13,7 @@
   export let name;
   export let height = "800px";
   export let data = {
-    title: "State Machine with Actions - The Final Result",
+    title: "My Piling.js Project",
     components: [
       {
         type: "svelte",
@@ -113,28 +113,3 @@
 	  --back-light: #f6fafd;
 	}
 </style>
-
-<!--
-	.repl-outer {
-	  background-color: #fff;
-	  --font: "Inter", "Open Sans", "Helvetica", "Verdana", sans-serif;
-	  --font-mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "Liberation Mono",
-	    "Courier New", monospace;
-	  --prime: rgb(3, 102, 114);
-	  --second: #676778;
-	  --back-light: #f6fafd;
-	}
-
-	.repl-outer {
-		position: relative;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100vh;
-		max-height: 100vh;
-		background-color: var(--back);
-		overflow: hidden;
-		box-sizing: border-box;
-		--pane-controls-h: 4.2rem;
-	}
--->
