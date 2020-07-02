@@ -18,11 +18,7 @@
       {
         type: "svelte",
         name: "laa",
-        source: `<style>
-    h1 {
-      color: pink;
-    }
-  </style>\n<h1>hi</h1>`
+        source: ""
       }
     ]
   };
