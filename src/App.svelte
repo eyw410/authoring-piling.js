@@ -18,7 +18,50 @@
       {
         type: "svelte",
         name: "App",
-        source: ""
+        source: `<script>
+  import { onMount } from 'svelte';
+  import Piling from './Component.js'
+
+  let wrapper;
+
+  onMount(() => {
+    Piling.createPiling(wrapper);
+  });
+  <\/script>
+
+  <div bind:this={wrapper} id="pilingjs-wrapper"></div>
+
+  <style>
+  #pilingjs-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  </style>`
+      },
+      {
+        type: "js",
+        name: "Component",
+        source: `const createPiling = async (element) => {	window.pilingJs.default(element, {
+  renderer: window.pilingJs.createImageRenderer(),
+  items: [
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000253413.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000533739.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000314530.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000418512.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000454273.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000219654.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000558596.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000392493.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000115639.jpg' },
+    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000228398.jpg' },
+  ]
+  })
+  };
+
+  module.exports = { createPiling }`
       }
     ]
   };
