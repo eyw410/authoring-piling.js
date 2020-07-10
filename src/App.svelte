@@ -133,7 +133,7 @@ export default createPiling;`,
           `(function(){${pixiJs.replace(
             '//# sourceMappingURL=pixi.min.js.map',
             ''
-          )};\nwindow.PIXI=PIXI;})();`,
+          )};\nPIXI.utils.skipHello();\nwindow.PIXI=PIXI;})();`,
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
         ].join('\n'),
