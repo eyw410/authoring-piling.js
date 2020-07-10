@@ -49,7 +49,19 @@
       coverAggregator,
     });
   });
-<\/script><style ✂prettier:content✂="CiNwaWxpbmdqcy13cmFwcGVyIHsKICBwb3NpdGlvbjogYWJzb2x1dGU7CiAgdG9wOiAwOwogIGxlZnQ6IDA7CiAgcmlnaHQ6IDA7CiAgYm90dG9tOiAwOwp9Cg=="></style><div bind:this={domElement} id="pilingjs-wrapper"></div>`,
+<\/script>
+
+<style>
+#pilingjs-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+</style>
+
+<div bind:this={domElement} id="pilingjs-wrapper"></div>`,
       },
       {
         type: 'js',
