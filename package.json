@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@sveltejs/svelte-repl": "^0.2.0",
-    "piling.js": "^0.7.2",
+    "piling.js": "^0.7.3",
     "pixi.js": "^5.1.6",
     "svelte": "^3.23.2",
     "umap-js": "^1.3.2"
