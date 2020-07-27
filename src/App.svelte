@@ -120,6 +120,49 @@ export default createPiling;`,
   let container;
   let repl;
   let windowWidth;
+
+  function handleDrop(event) {
+    event.preventDefault();
+
+    event.target.style.backgroundColor = "transparent";
+    console.log(event.dataTransfer.files[0]);
+
+    switch (event.dataTransfer.files[0].type) {
+      case 'text/csv':
+      case 'text/tab-separated-values':
+        console.log('csv or tsv')
+        // Papa.parse(event.dataTransfer.files[0], {
+        //   complete: (results) => {
+        //     const newConfig = buildConfig(results.data);
+
+        //     if (newConfig) this.setConfig(newConfig);
+        //     else this.showGlobalError('Invalid CSV or TSV file');
+        //   },
+        //   error: (error) => {
+        //     logger.warn(error);
+        //     this.showGlobalError('Invalid CSV or TSV file');
+        //   }
+        // });
+        break;
+
+      default:
+        console.log('unsupported file type')
+        // this.showGlobalError('Unsupported file type. Drop a CSV, TSV, or JSON!');
+        break;
+    }
+  }
+  
+  function handleDragover(event) {
+    event.target.style.backgroundColor = "pink";
+
+    // Prevent default behavior (Prevent file from being opened)
+    event.preventDefault();
+  }
+
+  function handleDragleave(event) {
+    event.target.style.backgroundColor = "transparent";
+  }
+
   onMount(async () => {
     let Repl = (await import('@sveltejs/svelte-repl')).default;
     repl = new Repl({
@@ -139,11 +182,6 @@ export default createPiling;`,
         ].join('\n'),
       },
     });
-  });
-  onDestroy(() => {
-    if (repl) {
-      repl.$destroy();
-    }
   });
   async function updateOrientation(w) {
     // Occasionally the REPL gets a bit screwed up if we set orientation while it's still
@@ -185,8 +223,11 @@ export default createPiling;`,
   }
 </style>
 
-<svelte:window bind:innerWidth={windowWidth} />
+<svelte:window bind:innerWidth={windowWidth}/>
 <main>
+  <div class="full-dim" ref="dragDropArea" on:drop={handleDrop} on:dragover={handleDragover} on:dragleave={handleDragleave}>
+    <span>Drop CSV or JSON config</span>
+  </div>
   <div class="repl-outer">
     <div class="viewport">
       <div class:w-expanded-95={expandedWidth}>
