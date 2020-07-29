@@ -7,6 +7,7 @@
   import pilingJs from '../node_modules/piling.js/dist/piling.min';
   import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
   import umapJs from '../node_modules/umap-js/lib/umap-js.min';
+  import Papa from 'papaparse'
 
   $: svelteUrl = `https://unpkg.com/svelte@latest`;
 
@@ -131,18 +132,15 @@ export default createPiling;`,
       case 'text/csv':
       case 'text/tab-separated-values':
         console.log('csv or tsv')
-        // Papa.parse(event.dataTransfer.files[0], {
-        //   complete: (results) => {
-        //     const newConfig = buildConfig(results.data);
-
-        //     if (newConfig) this.setConfig(newConfig);
-        //     else this.showGlobalError('Invalid CSV or TSV file');
-        //   },
-        //   error: (error) => {
-        //     logger.warn(error);
-        //     this.showGlobalError('Invalid CSV or TSV file');
-        //   }
-        // });
+        Papa.parse(event.dataTransfer.files[0], {
+          complete: (results) => {
+            console.log(`results are ${results.data}`);
+          },
+          error: (error) => {
+            console.log(error);
+            this.showGlobalError('Invalid CSV or TSV file');
+          }
+        });
         break;
 
       default:
@@ -223,10 +221,10 @@ export default createPiling;`,
   }
 </style>
 
-<svelte:window bind:innerWidth={windowWidth}/>
+<svelte:window bind:innerWidth={windowWidth} />
 <main>
   <div class="full-dim" ref="dragDropArea" on:drop={handleDrop} on:dragover={handleDragover} on:dragleave={handleDragleave}>
-    <span>Drop CSV or JSON config</span>
+    <span>Drop CSV file here</span>
   </div>
   <div class="repl-outer">
     <div class="viewport">
