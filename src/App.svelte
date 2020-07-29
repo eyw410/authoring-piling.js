@@ -10,9 +10,9 @@
 
   $: svelteUrl = `https://unpkg.com/svelte@latest`;
 
-  export let height = '800px';
+  export let height = '100%';
   export let data = {
-    title: "My Piling.js Project",
+    title: 'My Piling.js Project',
     components: [
       {
         type: 'svelte',
@@ -49,19 +49,7 @@
       coverAggregator,
     });
   });
-<\/script>
-
-<style>
-#pilingjs-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-</style>
-
-<div bind:this={domElement} id="pilingjs-wrapper"></div>`,
+<\/script><style ✂prettier:content✂="CiNwaWxpbmdqcy13cmFwcGVyIHsKICBwb3NpdGlvbjogYWJzb2x1dGU7CiAgdG9wOiAwOwogIGxlZnQ6IDA7CiAgcmlnaHQ6IDA7CiAgYm90dG9tOiAwOwp9Cg=="></style><div bind:this={domElement} id="pilingjs-wrapper"></div>`,
       },
       {
         type: 'js',
@@ -121,7 +109,7 @@ export default createPiling;`,
   let repl;
   let windowWidth;
   onMount(async () => {
-    let Repl = (await import('@sveltejs/svelte-repl')).default;
+    let Repl = (await import('./repl')).default;
     repl = new Repl({
       target: container,
       props: {
@@ -192,7 +180,8 @@ export default createPiling;`,
       <div class:w-expanded-95={expandedWidth}>
         <div
           class="flex flex-col font-sans border border-gray-100 shadow-md
-          rounded-lg">
+          rounded-lg"
+          style="height: 100vh">
           <div
             class="flex px-4 py-2 text-teal-800 border-b border-gray-200
             items-start sm:items-stretch">

@@ -100,7 +100,7 @@ function serve() {
 
 // bundle workers
 const workerConfig = ['compiler', 'bundler'].map((x) => ({
-  input: `src/workers/${x}/index.js`,
+  input: `src/repl/workers/${x}/index.js`,
   output: {
     file: `public/workers/${x}.js`,
     format: 'iife',
