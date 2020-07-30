@@ -54,20 +54,6 @@ const publicConfig = {
       ],
     }),
 
-    // replace({
-    //   // 2 level deep object should be stringify
-    //   process: JSON.stringify({
-    //     env: {
-    //       isProd: production,
-    //     },
-    //     browser: true
-    //   }),
-    // }),
-
-    // In dev mode, call `npm run start` once
-    // the bundle has been generated
-    !production && serve(),
-
     // Watch the `public` directory and refresh the
     // browser on changes when not in production
     !production && livereload('public'),
@@ -80,23 +66,6 @@ const publicConfig = {
     clearScreen: false,
   },
 };
-
-function serve() {
-  let started = false;
-
-  return {
-    writeBundle() {
-      if (!started) {
-        started = true;
-
-        require('child_process').spawn('sirv', ['public'], {
-          stdio: ['ignore', 'inherit', 'inherit'],
-          shell: true,
-        });
-      }
-    },
-  };
-}
 
 // bundle workers
 const workerConfig = ['compiler', 'bundler'].map((x) => ({
