@@ -10,7 +10,7 @@
 
   $: svelteUrl = `https://unpkg.com/svelte@latest`;
 
-  export let height = '100%';
+  export let navHeight = '50px';
   export let data = {
     title: 'My Piling.js Project',
     components: [
@@ -183,6 +183,48 @@ export default createPiling;`,
     --second: #676778;
     --back-light: #f6fafd;
   }
+
+  body {
+    padding: 0;
+  }
+
+  .bar {
+    width: 100%;
+    background-color: #555;
+    overflow: auto;
+  }
+
+  /* action labels */
+  .bar span {
+    float: left;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    font-size: 17px;
+    height: 100%;
+  }
+
+  .bar .bar-item {
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    color: #bfbfbf;
+  }
+
+  .bar span:hover {
+    background-color: #000;
+  }
+
+  /* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
+  @media screen and (max-width: 500px) {
+    .bar span {
+      float: none;
+      display: block;
+    }
+  }
 </style>
 
 <svelte:window bind:innerWidth={windowWidth} />
@@ -195,25 +237,52 @@ export default createPiling;`,
           rounded-lg"
           style="height: 100vh">
           <div
-            class="flex px-4 py-2 text-teal-800 border-b border-gray-200
-            items-start sm:items-stretch">
-            <span class="ml-auto inline-flex rounded-md shadow-sm">
+            class="bar"
+            style="height: {navHeight};">
+            <span>
               <button
+                class="bar-item"
                 type="button"
-                class="inline-flex items-center px-2.5 py-1.5 border
-                border-gray-300 text-xs leading-4 font-medium rounded
-                text-gray-700 bg-white hover:text-gray-500 focus:outline-none
-                focus:border-blue-300 focus:shadow-outline-blue
-                active:text-gray-800 active:bg-gray-50 transition ease-in-out
-                duration-150"
+                on:click={() => {alert("Not implemented")}}>
+                Run
+              </button>
+            </span>
+            <span>
+              <button
+                class="bar-item"
+                type="button"
                 on:click={reset}>
                 Reset
+              </button>
+            </span>
+            <span>
+              <button
+                class="bar-item"
+                type="button"
+                on:click={() => {alert("Not implemented")}}>
+                Import
+              </button>
+            </span>
+            <span>
+              <button
+                class="bar-item"
+                type="button"
+                on:click={() => {alert("Not implemented")}}>
+                Export
+              </button>
+            </span>
+            <span>
+              <button
+                class="bar-item"
+                type="button"
+                on:click={() => {alert("Not implemented")}}>
+                Settings
               </button>
             </span>
           </div>
           <div
             class="svelte-repl"
-            style="height:{height};"
+            style="height: calc(100% - {navHeight})"
             bind:this={container} />
         </div>
       </div>
