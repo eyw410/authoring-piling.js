@@ -1,12 +1,15 @@
 <script>
-  import '../theme/_smui-theme.scss';
-  import Button from '@smui/button';
-
-  import clone from 'just-clone';
   import { onMount, onDestroy, tick } from 'svelte';
+  import Button from '@smui/button';
+  import clone from 'just-clone';
+
+  import Repl from './repl';
+
   import pilingJs from '../node_modules/piling.js/dist/piling.min';
   import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
   import umapJs from '../node_modules/umap-js/lib/umap-js.min';
+
+  import '../theme/_smui-theme.scss';
 
   $: svelteUrl = `https://unpkg.com/svelte@latest`;
 
@@ -121,7 +124,6 @@ export default createPiling;`,
   let repl;
   let windowWidth;
   onMount(async () => {
-    let Repl = (await import('./repl')).default;
     repl = new Repl({
       target: container,
       props: {
