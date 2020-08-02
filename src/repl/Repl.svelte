@@ -25,7 +25,7 @@
 
   export function toJSON() {
     return {
-      imports: $bundle.imports,
+      imports: $bundle && $bundle.imports,
       components: $components,
     };
   }
