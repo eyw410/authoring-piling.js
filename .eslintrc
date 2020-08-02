@@ -9,7 +9,10 @@
   },
   "plugins": ["svelte3"],
   "extends": [
-    "eslint:recommended"
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "prettier"
   ],
   "overrides": [
     {
