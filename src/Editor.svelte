@@ -11,7 +11,6 @@
 
   import {
     DEFAULT_COMPONENTS,
-    DEFAULT_REPL_ID,
     DEFAULT_SVELTE_URL,
     DEFAULT_WORKERS_URL,
   } from './constants';
