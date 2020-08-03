@@ -1,16 +1,19 @@
 <script>
   import { getContext, onMount, onDestroy, tick } from 'svelte';
+  import { get } from 'svelte/store';
   import Button from '@smui/button';
   import clone from 'just-clone';
 
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
+  import { components } from './stores';
+
   import {
-    DEFAULT_DATA,
-    DEAULFT_REPL_ID,
-    DEAULFT_SVELTE_URL,
-    DEAULFT_WORKERS_URL,
+    DEFAULT_COMPONENTS,
+    DEFAULT_REPL_ID,
+    DEFAULT_SVELTE_URL,
+    DEFAULT_WORKERS_URL,
   } from './constants';
 
   import { readJsonFile } from './utils';
@@ -24,105 +27,13 @@
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
 
-  let data = DEFAULT_DATA;
+  let data = JSON.parse($components[1].source);
   let init = false;
 
   let height = '100%';
   let sources = {
     title: 'My Piling.js Project',
-    components: [
-      {
-        type: 'svelte',
-        name: 'App',
-        source: `<script>
-  import { onMount } from 'svelte';
-
-  import dataFetcher from './data-fetcher.js';
-  import itemTransformer from './item-transformer.js';
-  import itemRenderer from './item-renderer.js';
-  import coverAggregator from './cover-aggregator.js';
-  import createPiling from './piling-creator.js';
-
-  let domElement;
-
-  onMount(async () => {
-    const data = await Promise.resolve(dataFetcher());
-    const items = data.map(itemTransformer);
-    createPiling({
-      domElement,
-      items,
-      itemRenderer,
-      coverAggregator,
-    });
-  });
-<\/script><style ✂prettier:content✂="CiNwaWxpbmdqcy13cmFwcGVyIHsKICBwb3NpdGlvbjogYWJzb2x1dGU7CiAgdG9wOiAwOwogIGxlZnQ6IDA7CiAgcmlnaHQ6IDA7CiAgYm90dG9tOiAwOwp9Cg=="></style><div bind:this={domElement} id="pilingjs-wrapper"></div>`,
-      },
-      {
-        type: 'json',
-        name: 'data',
-        source: JSON.stringify(data, null, 4),
-      },
-      {
-        type: 'js',
-        name: 'data-fetcher',
-        source: `// Data fetcher
-import data from './data.json';
-
-const fetcher = () => data
-
-export default fetcher;`,
-      },
-      {
-        type: 'js',
-        name: 'item-transformer',
-        source: `// Item transformer
-
-const transformer = (item) => {
-  return item;
-}
-
-export default transformer;`,
-      },
-      {
-        type: 'js',
-        name: 'item-renderer',
-        source: `// Item renderer
-import { createImageRenderer } from 'piling.js'
-
-const renderer = createImageRenderer();
-
-export default renderer;`,
-      },
-      {
-        type: 'js',
-        name: 'cover-aggregator',
-        source: `// Pile cover aggregator
-
-// Pick the element in the middle
-const aggregator = async (items) => items[Math.round(items.length / 2)].src;
-
-export default aggregator;`,
-      },
-      {
-        type: 'js',
-        name: 'piling-creator',
-        source: `// Piling.js view specification
-import createPilingJs from 'piling.js';
-
-const createPiling = ({
-  domElement,
-  items,
-  itemRenderer,
-  coverAggregator
-} = {}) => createPilingJs(domElement, {
-  items,
-  itemRenderer,
-  coverAggregator
-});
-
-export default createPiling;`,
-      },
-    ],
+    components: $components,
   };
 
   let container;
@@ -135,9 +46,8 @@ export default createPiling;`,
     repl = new Repl({
       target: container,
       props: {
-        id: DEAULFT_REPL_ID,
-        svelteUrl: DEAULFT_SVELTE_URL,
-        workersUrl: DEAULFT_WORKERS_URL,
+        svelteUrl: DEFAULT_SVELTE_URL,
+        workersUrl: DEFAULT_WORKERS_URL,
         orientation: windowWidth > 600 ? 'columns' : 'rows',
         injectedJS: [
           `(function(){${pixiJs.replace(
@@ -166,25 +76,15 @@ export default createPiling;`,
 
   $: ({ title, ...replData } = sources);
   $: repl && updateOrientation(windowWidth);
-  $: if (repl) {
-    if (init) {
-      // update() preserves the currently selected tab
-      repl.update(clone(replData));
-    } else {
-      repl.set(clone(replData));
-      init = true;
-    }
-  }
+  $: repl && repl.init();
   $: if (repl && data) {
-    const components = [...repl.toJSON().components];
-    if (components.length === sources.components.length) {
-      components[1].source = JSON.stringify(data, null, 2);
-      sources.components = components;
-    }
-  }
-
-  function reset() {
-    repl.update(clone(replData));
+    components.update((_components) => {
+      _components[1].source = JSON.stringify(data, null, 2);
+      return _components;
+    });
+    // We need to manually rebundle as subscribing to `components` would cause
+    // doublicated bundling
+    repl.rebundle();
   }
 
   let dragover = false;
