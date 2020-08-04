@@ -1,21 +1,18 @@
 {
-  "parserOptions": {
-    "ecmaVersion": 2019,
-    "sourceType": "module"
-  },
   "env": {
     "es6": true,
     "browser": true
   },
-  "plugins": [
-    "prettier",
-    "svelte3"
-  ],
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module"
+  },
+  "plugins": ["svelte3"],
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:prettier/recommended"
+    "prettier"
   ],
   "overrides": [
     {
@@ -24,8 +21,6 @@
     }
   ],
   "rules": {
-    "prettier/prettier": "error",
-    "class-methods-use-this": 0,
     "no-bitwise": 0,
     "no-plusplus": 0
   }

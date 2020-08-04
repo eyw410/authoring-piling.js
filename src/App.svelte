@@ -1,234 +1,27 @@
 <script>
-  import '../theme/_smui-theme.scss';
-  import Button from '@smui/button';
+  import { onDestroy } from 'svelte';
+  import { debounce } from '@flekschas/utils';
+  import Modal from 'svelte-simple-modal';
 
-  import clone from 'just-clone';
-  import { onMount, onDestroy, tick } from 'svelte';
-  import pilingJs from '../node_modules/piling.js/dist/piling.min';
-  import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
-  import umapJs from '../node_modules/umap-js/lib/umap-js.min';
+  import Editor from './Editor.svelte';
+  import * as stores from './stores';
+  import { STORAGE_KEY, STORAGE_SAVE_DEBOUNCE } from './constants';
+  import { saveStores, serializeStores } from './utils';
 
-  $: svelteUrl = `https://unpkg.com/svelte@latest`;
+  const saveStoresDb = debounce(() => {
+    const serializedStore = serializeStores(stores);
+    saveStores(STORAGE_KEY, serializedStore);
+  }, STORAGE_SAVE_DEBOUNCE);
 
-  export let height = '100%';
-  export let data = {
-    title: 'My Piling.js Project',
-    components: [
-      {
-        type: 'svelte',
-        name: 'App',
-        source: `<script>
-  import { onMount } from 'svelte';
-
-  import itemTransformer from './item-transformer.js';
-  import itemRenderer from './item-renderer.js';
-  import coverAggregator from './cover-aggregator.js';
-  import createPiling from './piling.js';
-
-  const testItems = [
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000253413.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000533739.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000314530.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000418512.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000454273.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000219654.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000558596.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000392493.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000115639.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000228398.jpg' },
-  ];
-
-  let domElement;
-
-  onMount(() => {
-    const items = testItems.map(itemTransformer);
-    createPiling({
-      domElement,
-      items,
-      itemRenderer,
-      coverAggregator,
-    });
+  const unsubscribers = Object.values(stores).map((property) => {
+    return property.subscribe(saveStoresDb);
   });
-<\/script>
 
-<style>
-#pilingjs-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-</style>
-
-<div bind:this={domElement} id="pilingjs-wrapper"></div>`,
-      },
-      {
-        type: 'js',
-        name: 'item-transformer',
-        source: `// Item transformer
-
-const transformer = (item) => {
-  return item;
-}
-
-export default transformer;`,
-      },
-      {
-        type: 'js',
-        name: 'item-renderer',
-        source: `// Item renderer
-import { createImageRenderer } from 'piling.js'
-
-const renderer = createImageRenderer();
-
-export default renderer;`,
-      },
-      {
-        type: 'js',
-        name: 'cover-aggregator',
-        source: `// Pile cover aggregator
-
-// Pick the element in the middle
-const aggregator = async (items) => items[Math.round(items.length / 2)].src;
-
-export default aggregator;`,
-      },
-      {
-        type: 'js',
-        name: 'piling',
-        source: `// Piling.js view specification
-import createPilingJs from 'piling.js';
-
-const createPiling = ({
-  domElement,
-  items,
-  itemRenderer,
-  coverAggregator
-} = {}) => createPilingJs(domElement, {
-  items,
-  itemRenderer,
-  coverAggregator
-});
-
-export default createPiling;`,
-      },
-    ],
-  };
-  export let id = 'pickle';
-  export let expandedWidth = true;
-  let container;
-  let repl;
-  let windowWidth;
-  onMount(async () => {
-    let Repl = (await import('./repl')).default;
-    repl = new Repl({
-      target: container,
-      props: {
-        id,
-        svelteUrl,
-        workersUrl: 'workers',
-        orientation: windowWidth > 600 ? 'columns' : 'rows',
-        injectedJS: [
-          `(function(){${pixiJs.replace(
-            '//# sourceMappingURL=pixi.min.js.map',
-            ''
-          )};\nPIXI.utils.skipHello();\nwindow.PIXI=PIXI;})();`,
-          `(function(){${umapJs};})();`,
-          `(function(){${pilingJs};})();`,
-        ].join('\n'),
-      },
-    });
-  });
   onDestroy(() => {
-    if (repl) {
-      repl.$destroy();
-    }
+    unsubscribers.forEach((unsubscriber) => unsubscriber());
   });
-  async function updateOrientation(w) {
-    // Occasionally the REPL gets a bit screwed up if we set orientation while it's still
-    // intializing, so wait a tick.
-    await tick();
-    repl.$set({ orientation: w > 600 ? 'columns' : 'rows' });
-  }
-  $: ({ title, ...replData } = data);
-  $: repl && repl.set(clone(replData));
-  $: repl && updateOrientation(windowWidth);
-
-  function reset() {
-    repl.update(clone(replData));
-  }
 </script>
 
-<style>
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
-
-  .repl-outer {
-    background-color: #fff;
-    --font: 'Inter', 'Open Sans', 'Helvetica', 'Verdana', sans-serif;
-    --font-mono: 'Inconsolata', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono',
-      'Courier New', monospace;
-    --prime: rgb(3, 102, 114);
-    --second: #676778;
-    --back-light: #f6fafd;
-  }
-</style>
-
-<svelte:window bind:innerWidth={windowWidth} />
-<main>
-  <div class="repl-outer">
-    <div class="viewport">
-      <div class:w-expanded-95={expandedWidth}>
-        <div
-          class="flex flex-col font-sans border border-gray-100 shadow-md
-          rounded-lg"
-          style="height: 100vh">
-          <div
-            class="flex px-4 py-2 text-teal-800 border-b border-gray-200
-            items-start sm:items-stretch">
-            <span class="ml-auto inline-flex rounded-md shadow-sm">
-              <button
-                type="button"
-                class="inline-flex items-center px-2.5 py-1.5 border
-                border-gray-300 text-xs leading-4 font-medium rounded
-                text-gray-700 bg-white hover:text-gray-500 focus:outline-none
-                focus:border-blue-300 focus:shadow-outline-blue
-                active:text-gray-800 active:bg-gray-50 transition ease-in-out
-                duration-150"
-                on:click={reset}>
-                Reset
-              </button>
-            </span>
-          </div>
-          <div
-            class="svelte-repl"
-            style="height:{height};"
-            bind:this={container} />
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
-<!--
-	.repl-outer {
-	  background-color: #fff;
-	  --font: "Inter", "Open Sans", "Helvetica", "Verdana", sans-serif;
-	  --font-mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "Liberation Mono",
-	    "Courier New", monospace;
-	  --prime: rgb(3, 102, 114);
-	  --second: #676778;
-	  --back-light: #f6fafd;
-	}
-</style>
--->
+<Modal>
+  <Editor />
+</Modal>

@@ -7,8 +7,9 @@
   import Output from './Output/index.svelte';
   import Bundler from './Bundler.js';
   import { is_browser } from './env.js';
-
   import PaneWithPanel from './Output/PaneWithPanel.svelte';
+
+  import { components, selectedComponent as selected } from '../stores.js';
 
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
@@ -25,21 +26,17 @@
 
   export function toJSON() {
     return {
-      imports: $bundle.imports,
+      imports: $bundle && $bundle.imports,
       components: $components,
     };
   }
 
-  export async function set(data) {
-    components.set(data.components);
-    selected.set(data.components[0]);
-
+  export async function init() {
     rebundle();
 
     await module_editor_ready;
     await output_ready;
 
-    injectedCSS = data.css || '';
     await module_editor.set($selected.source, $selected.type);
     output.set($selected, $compile_options);
 
@@ -47,28 +44,28 @@
     module_editor.clearHistory();
   }
 
-  export function update(data) {
-    const { name, type } = $selected || {};
+  // export function update(data) {
+  //   const { name, type } = $selected || {};
 
-    components.set(data.components);
+  //   components.set(data.components);
 
-    const matched_component = data.components.find(
-      (file) => file.name === name && file.type === type
-    );
-    selected.set(matched_component || data.components[0]);
+  //   const matched_component = data.components.find(
+  //     (file) => file.name === name && file.type === type
+  //   );
+  //   selected.set(matched_component || data.components[0]);
 
-    injectedCSS = data.css || '';
+  //   injectedCSS = data.css || '';
 
-    if (matched_component) {
-      module_editor.update(matched_component.source);
-      output.update(matched_component, $compile_options);
-    } else {
-      module_editor.set(matched_component.source, matched_component.type);
-      output.set(matched_component, $compile_options);
+  //   if (matched_component) {
+  //     module_editor.update(matched_component.source);
+  //     output.update(matched_component, $compile_options);
+  //   } else {
+  //     module_editor.set(matched_component.source, matched_component.type);
+  //     output.set(matched_component, $compile_options);
 
-      module_editor.clearHistory();
-    }
-  }
+  //     module_editor.clearHistory();
+  //   }
+  // }
 
   if (!workersUrl) {
     throw new Error(`You must supply workersUrl prop to <Repl>`);
@@ -76,10 +73,7 @@
 
   const dispatch = createEventDispatcher();
 
-  const components = writable([]);
-  const selected = writable(null);
   const bundle = writable(null);
-
   const compile_options = writable({
     generate: 'dom',
     dev: false,
@@ -94,7 +88,7 @@
   let output;
 
   let current_token;
-  async function rebundle() {
+  export async function rebundle() {
     const token = (current_token = {});
     const result = await bundler.bundle($components);
     if (result && token === current_token) bundle.set(result);

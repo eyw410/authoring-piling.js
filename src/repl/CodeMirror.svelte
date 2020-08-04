@@ -5,6 +5,7 @@
   let _CodeMirror;
 
   if (is_browser) {
+    // eslint-ignore-next-line
     codemirror_promise = import('./codemirror.js');
 
     codemirror_promise.then((mod) => {
