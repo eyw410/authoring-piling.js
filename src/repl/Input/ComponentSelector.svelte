@@ -309,7 +309,7 @@
           on:drop={dragEnd}>
           <i class="drag-handle" />
           {#if component.name === 'App' && component !== editing}
-            <div class="uneditable">App.svelte</div>
+            <div class="uneditable">App</div>
           {:else if component === editing}
             <span class="input-sizer">
               {editing.name + (/\./.test(editing.name) ? '' : `.${editing.type}`)}
@@ -329,7 +329,7 @@
               class="editable"
               title="edit component name"
               on:click={() => editTab(component)}>
-              {component.name}.{component.type}
+              {component.name}
             </div>
 
             <span class="remove" on:click={() => remove(component)}>
