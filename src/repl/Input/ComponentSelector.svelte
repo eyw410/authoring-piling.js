@@ -7,6 +7,12 @@
 
   let editing = null;
 
+  const cleanTitle = title => {
+    return title.split('-')
+      .map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
+      .join(' ')
+  }
+
   function selectComponent(component) {
     if ($selected !== component) {
       editing = null;
@@ -187,13 +193,15 @@
 
   .input-sizer {
     color: #ccc;
+    left: 0;
+    top: 0;
   }
 
   input {
     position: absolute;
     width: 100%;
-    left: 16px;
-    top: 12px;
+    left: 11px;
+    top: 7px;
     font: 400 12px/1.5 var(--font);
     border: none;
     color: var(--flash);
@@ -329,7 +337,7 @@
               class="editable"
               title="edit component name"
               on:click={() => editTab(component)}>
-              {component.name}
+              {cleanTitle(component.name)}
             </div>
 
             <span class="remove" on:click={() => remove(component)}>
