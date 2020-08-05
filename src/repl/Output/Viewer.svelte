@@ -40,7 +40,6 @@
   let last_console_event;
 
   onMount(() => {
-    console.log('ASS', iframe);
     proxy = new ReplProxy(iframe, {
       on_fetch_progress: (progress) => {
         pending_imports = progress;

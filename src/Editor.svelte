@@ -1,151 +1,69 @@
 <script>
-  import '../theme/_smui-theme.scss';
+  import { getContext, onMount, onDestroy, tick } from 'svelte';
+  import { get } from 'svelte/store';
   import Button from '@smui/button';
-
   import clone from 'just-clone';
-  import { onMount, onDestroy, tick } from 'svelte';
+
+  import Error from './Error.svelte';
+  import Warning from './Warning.svelte';
+
+  import { components } from './stores';
+
+  import {
+    DEFAULT_COMPONENTS,
+    DEFAULT_SVELTE_URL,
+    DEFAULT_WORKERS_URL,
+  } from './constants';
+
+  import { readJsonFile } from './utils';
+
   import pilingJs from '../node_modules/piling.js/dist/piling.min';
   import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
   import umapJs from '../node_modules/umap-js/lib/umap-js.min';
 
-  import { getContext } from 'svelte';
+  import '../theme/_smui-theme.scss';
+
   import Settings from './Settings.svelte';
 
-  const { open } = getContext('simple-modal');
-  
+  const { open: openModal } = getContext('simple-modal');
+  const svelteUrl = 'https://unpkg.com/svelte@latest';
+
+// Settings Modal
   // import { autoRun } from './store.js';
 
   let autoRun = false;
 
   const toggleAuto = () => {
     autoRun = !autoRun;
-    open(Settings, { isAuto: autoRun, toggleAuto: toggleAuto });
   }
 
   function showSettings() {
-    open(Settings, { isAuto: autoRun, toggleAuto: toggleAuto });
+    openModal(Settings, { isAuto: autoRun, toggleAuto: toggleAuto });
   }
 
-  $: svelteUrl = `https://unpkg.com/svelte@latest`;
+  let data = JSON.parse($components[1].source);
+  let init = false;
 
-  export let navHeight = '50px';
-  export let data = {
+  let height = '100%';
+  let navHeight = '50px';
+
+  let sources = {
     title: 'My Piling.js Project',
-    components: [
-      {
-        type: 'svelte',
-        name: 'App',
-        source: `<script>
-  import { onMount } from 'svelte';
-
-  import itemTransformer from './item-transformer.js';
-  import itemRenderer from './item-renderer.js';
-  import coverAggregator from './cover-aggregator.js';
-  import createPiling from './piling.js';
-
-  const testItems = [
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000253413.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000533739.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000314530.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000418512.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000454273.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000219654.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000558596.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000392493.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000115639.jpg' },
-    { src: 'https://storage.googleapis.com/pilingjs/coco-cars/000000228398.jpg' },
-  ];
-
-  let domElement;
-
-  onMount(() => {
-    const items = testItems.map(itemTransformer);
-    createPiling({
-      domElement,
-      items,
-      itemRenderer,
-      coverAggregator,
-    });
-  });
-<\/script>
-
-<style>
-#pilingjs-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-</style>
-
-<div bind:this={domElement} id="pilingjs-wrapper"></div>`,
-      },
-      {
-        type: 'js',
-        name: 'item-transformer',
-        source: `// Item transformer
-
-const transformer = (item) => {
-  return item;
-}
-
-export default transformer;`,
-      },
-      {
-        type: 'js',
-        name: 'item-renderer',
-        source: `// Item renderer
-import { createImageRenderer } from 'piling.js'
-
-const renderer = createImageRenderer();
-
-export default renderer;`,
-      },
-      {
-        type: 'js',
-        name: 'cover-aggregator',
-        source: `// Pile cover aggregator
-
-// Pick the element in the middle
-const aggregator = async (items) => items[Math.round(items.length / 2)].src;
-
-export default aggregator;`,
-      },
-      {
-        type: 'js',
-        name: 'piling',
-        source: `// Piling.js view specification
-import createPilingJs from 'piling.js';
-
-const createPiling = ({
-  domElement,
-  items,
-  itemRenderer,
-  coverAggregator
-} = {}) => createPilingJs(domElement, {
-  items,
-  itemRenderer,
-  coverAggregator
-});
-
-export default createPiling;`,
-      },
-    ],
+    components: $components,
   };
-  export let id = 'pickle';
-  export let expandedWidth = true;
+
   let container;
   let repl;
   let windowWidth;
+
   onMount(async () => {
+    // eslint-ignore-next-line
     let Repl = (await import('./repl')).default;
     repl = new Repl({
       target: container,
       props: {
-        id,
-        svelteUrl,
-        workersUrl: 'workers',
+        svelteUrl: DEFAULT_SVELTE_URL,
+        workersUrl: DEFAULT_WORKERS_URL,
         orientation: windowWidth > 600 ? 'columns' : 'rows',
         injectedJS: [
           `(function(){${pixiJs.replace(
@@ -158,24 +76,72 @@ export default createPiling;`,
       },
     });
   });
+
   onDestroy(() => {
     if (repl) {
       repl.$destroy();
     }
   });
+
   async function updateOrientation(w) {
     // Occasionally the REPL gets a bit screwed up if we set orientation while it's still
     // intializing, so wait a tick.
     await tick();
     repl.$set({ orientation: w > 600 ? 'columns' : 'rows' });
   }
-  $: ({ title, ...replData } = data);
-  $: repl && repl.set(clone(replData));
+
+  $: ({ title, ...replData } = sources);
   $: repl && updateOrientation(windowWidth);
+  $: repl && repl.init();
+  $: if (repl && data) {
+    components.update((_components) => {
+      _components[1].source = JSON.stringify(data, null, 2);
+      return _components;
+    });
+    // We need to manually rebundle as subscribing to `components` would cause
+    // doublicated bundling
+    repl.rebundle();
+  }
 
   function reset() {
     repl.update(clone(replData));
   }
+
+  let dragover = false;
+
+  const dragenterHandler = () => {
+    dragover = true;
+  };
+
+  const dragleaveHandler = async () => {
+    dragover = false;
+  };
+
+  const dropHandler = (event) => {
+    event.preventDefault();
+
+    dragover = false;
+
+    if (event.dataTransfer.files.length) {
+      switch (event.dataTransfer.files[0].type) {
+        case 'application/json':
+          readJsonFile(event.dataTransfer.files[0])
+            .then((newData) => {
+              data = newData;
+            })
+            .catch((error) => {
+              openModal(Error, { message: 'Invalid JSON file' });
+            });
+          break;
+
+        default:
+          openModal(Warning, { message: 'Unsupported file type!' });
+          break;
+      }
+    } else {
+      openModal(Warning, { message: 'Only drop files!' });
+    }
+  };
 </script>
 
 <style>
@@ -190,6 +156,16 @@ export default createPiling;`,
     main {
       max-width: none;
     }
+  }
+
+  .dragover-notifier {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(240, 240, 240, 0.95);
   }
 
   .repl-outer {
@@ -243,13 +219,27 @@ export default createPiling;`,
       display: block;
     }
   }
+
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
 </style>
 
 <svelte:window bind:innerWidth={windowWidth} />
-<main>
+<main on:dragenter={dragenterHandler} ondragover="return false">
+  {#if dragover}
+    <div
+      class="dragover-notifier"
+      on:dragleave={dragleaveHandler}
+      on:drop={dropHandler}>
+      Drop it!
+    </div>
+  {/if}
   <div class="repl-outer">
     <div class="viewport">
-      <div class:w-expanded-95={expandedWidth}>
+      <div class="w-expanded-95">
         <div
           class="flex flex-col font-sans border border-gray-100 shadow-md
           rounded-lg"
