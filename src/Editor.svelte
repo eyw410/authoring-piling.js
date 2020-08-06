@@ -161,15 +161,3 @@
     style="height: 100%"
     bind:this={container} />
 </main>
-<!--
-	.repl-outer {
-	  background-color: #fff;
-	  --font: "Inter", "Open Sans", "Helvetica", "Verdana", sans-serif;
-	  --font-mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "Liberation Mono",
-	    "Courier New", monospace;
-	  --prime: rgb(3, 102, 114);
-	  --second: #676778;
-	  --back-light: #f6fafd;
-	}
-</style>
--->

@@ -37,17 +37,8 @@
 </style>
 
 <Modal>
-  <div class="repl-outer">
-    <div class="viewport">
-      <div class="w-expanded-95">
-        <div
-          class="flex flex-col font-sans border border-gray-100 shadow-md
-          rounded-lg"
-          style="height: 100vh">
-        <TopBar />
-        <Editor />
-        </div>
-      </div>
-    </div>
+  <div class="repl-outer" style="height: 100vh">
+    <TopBar />
+    <Editor />
   </div>
 </Modal>
