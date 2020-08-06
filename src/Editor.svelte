@@ -7,7 +7,7 @@
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
-  import { components } from './stores';
+  import { components, settings } from './stores';
 
   import {
     DEFAULT_COMPONENTS,
@@ -28,17 +28,13 @@
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
 
-// Settings Modal
-  // import { autoRun } from './store.js';
-
-  let autoRun = false;
-
+  // Settings Modal
   const toggleAuto = () => {
-    autoRun = !autoRun;
+    settings.update((curr) => {return {autoRun: !curr.autoRun}});
   }
 
   function showSettings() {
-    openModal(Settings, { isAuto: autoRun, toggleAuto: toggleAuto });
+    openModal(Settings, { settings: settings, toggleAuto: toggleAuto });
   }
 
   let data = JSON.parse($components[1].source);

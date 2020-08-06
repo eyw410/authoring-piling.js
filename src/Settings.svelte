@@ -1,5 +1,5 @@
 <script>
-  export let isAuto;
+  export let settings;
   export let toggleAuto = () => {};
 </script>
 
@@ -9,4 +9,4 @@
   }
 </style>
 
-<div on:click={toggleAuto}>runs automatically: {isAuto}</div>
+<div on:click={toggleAuto}>runs automatically: {$settings.autoRun}</div>

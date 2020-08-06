@@ -1,3 +1,7 @@
+export const DEFAULT_SETTINGS = {
+  autoRun: true
+};
+
 export const DEFAULT_DATA = Array(9)
   .fill()
   .map(() => ({
