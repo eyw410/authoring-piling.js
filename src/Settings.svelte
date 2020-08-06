@@ -1,7 +1,7 @@
 <script>
   import { autoRun } from './stores';
 
-  let toggleAuto = () => {
+  const toggleAuto = () => {
     autoRun.update(val => !val);
   };
 </script>
