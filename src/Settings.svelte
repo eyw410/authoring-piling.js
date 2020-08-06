@@ -1,6 +1,9 @@
 <script>
-  export let settings;
-  export let toggleAuto = () => {};
+  import { autoRun } from './stores';
+
+  let toggleAuto = () => {
+    autoRun.update(val => !val);
+  };
 </script>
 
 <style>
@@ -9,4 +12,4 @@
   }
 </style>
 
-<div on:click={toggleAuto}>runs automatically: {$settings.autoRun}</div>
+<div on:click={toggleAuto}>runs automatically: {$autoRun}</div>

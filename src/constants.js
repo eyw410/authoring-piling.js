@@ -1,6 +1,6 @@
-export const DEFAULT_SETTINGS = {
-  autoRun: true
-};
+export const DEFAULT_AUTORUN = true;
+
+export const navHeight = '50px';
 
 export const DEFAULT_DATA = Array(9)
   .fill()

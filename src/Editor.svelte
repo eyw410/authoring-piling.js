@@ -7,7 +7,7 @@
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
-  import { components, settings } from './stores';
+  import { components, autoRun } from './stores';
 
   import {
     DEFAULT_COMPONENTS,
@@ -23,19 +23,8 @@
 
   import '../theme/_smui-theme.scss';
 
-  import Settings from './Settings.svelte';
-
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
-
-  // Settings Modal
-  const toggleAuto = () => {
-    settings.update((curr) => {return {autoRun: !curr.autoRun}});
-  }
-
-  function showSettings() {
-    openModal(Settings, { settings: settings, toggleAuto: toggleAuto });
-  }
 
   let data = JSON.parse($components[1].source);
   let init = false;
@@ -69,6 +58,7 @@
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
         ].join('\n'),
+        autoRun: $autoRun
       },
     });
   });
@@ -141,13 +131,6 @@
 </script>
 
 <style>
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-
   @media (min-width: 640px) {
     main {
       max-width: none;
@@ -163,68 +146,10 @@
     left: 0;
     background: rgba(240, 240, 240, 0.95);
   }
-
-  .repl-outer {
-    background-color: #fff;
-    --font: 'Inter', 'Open Sans', 'Helvetica', 'Verdana', sans-serif;
-    --font-mono: 'Inconsolata', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono',
-      'Courier New', monospace;
-    --prime: rgb(3, 102, 114);
-    --second: #676778;
-    --back-light: #f6fafd;
-  }
-
-  body {
-    padding: 0;
-  }
-
-  .bar {
-    width: 100%;
-    background-color: #555;
-    overflow: auto;
-  }
-
-  /* action labels */
-  .bar span {
-    float: left;
-    text-align: center;
-    color: white;
-    text-decoration: none;
-    font-size: 17px;
-    height: 100%;
-  }
-
-  .bar .bar-item {
-    background-color: transparent;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    border-radius: 0;
-    border: none;
-    color: #bfbfbf;
-  }
-
-  .bar span:hover {
-    background-color: #000;
-  }
-
-  /* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
-  @media screen and (max-width: 500px) {
-    .bar span {
-      float: none;
-      display: block;
-    }
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
 </style>
 
-<svelte:window bind:innerWidth={windowWidth} />
-<main on:dragenter={dragenterHandler} ondragover="return false">
+<svelte:window bind:innerWidth={windowWidth}/>
+<main on:dragenter={dragenterHandler} ondragover="return false" style="height: calc(100% - {navHeight})">
   {#if dragover}
     <div
       class="dragover-notifier"
@@ -233,65 +158,10 @@
       Drop it!
     </div>
   {/if}
-  <div class="repl-outer">
-    <div class="viewport">
-      <div class="w-expanded-95">
-        <div
-          class="flex flex-col font-sans border border-gray-100 shadow-md
-          rounded-lg"
-          style="height: 100vh">
-          <div
-            class="bar"
-            style="height: {navHeight};">
-            <span>
-              <button
-                class="bar-item"
-                type="button"
-                on:click={() => {alert("Not implemented")}}>
-                Run
-              </button>
-            </span>
-            <span>
-              <button
-                class="bar-item"
-                type="button"
-                on:click={reset}>
-                Reset
-              </button>
-            </span>
-            <span>
-              <button
-                class="bar-item"
-                type="button"
-                on:click={() => {alert("Not implemented")}}>
-                Import
-              </button>
-            </span>
-            <span>
-              <button
-                class="bar-item"
-                type="button"
-                on:click={() => {alert("Not implemented")}}>
-                Export
-              </button>
-            </span>
-            <span>
-              <button
-                class="bar-item"
-                type="button"
-                on:click={showSettings}>
-                Settings
-              </button>
-            </span>
-          </div>
-          <div
-            class="svelte-repl"
-            style="height: calc(100% - {navHeight})"
-            bind:this={container} />
-        </div>
-      </div>
-    </div>
-  </div>
+  <div
+    class="svelte-repl"
+    style="height: 100%"
+    bind:this={container} />
 </main>
 <!--
 	.repl-outer {
