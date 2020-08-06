@@ -1,6 +1,6 @@
 export const DEFAULT_AUTORUN = true;
 
-export const navHeight = '50px';
+export const NAV_HEIGHT = '50px';
 
 export const DEFAULT_DATA = Array(9)
   .fill()

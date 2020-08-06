@@ -17,7 +17,7 @@
 
   import '../theme/_smui-theme.scss';
 
-  import { navHeight } from './constants.js';
+  import { NAV_HEIGHT } from './constants.js';
   import Settings from './Settings.svelte';
 
   const { open: openModal } = getContext('simple-modal');
@@ -73,7 +73,7 @@
 <div>
   <div
     class="bar"
-    style="height: {navHeight};">
+    style="height: {NAV_HEIGHT};">
     <span>
       <button
         class="bar-item"

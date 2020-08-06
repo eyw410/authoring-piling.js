@@ -13,6 +13,7 @@
     DEFAULT_COMPONENTS,
     DEFAULT_SVELTE_URL,
     DEFAULT_WORKERS_URL,
+    NAV_HEIGHT
   } from './constants';
 
   import { readJsonFile } from './utils';
@@ -28,9 +29,6 @@
 
   let data = JSON.parse($components[1].source);
   let init = false;
-
-  let height = '100%';
-  let navHeight = '50px';
 
   let sources = {
     title: 'My Piling.js Project',
@@ -149,7 +147,7 @@
 </style>
 
 <svelte:window bind:innerWidth={windowWidth}/>
-<main on:dragenter={dragenterHandler} ondragover="return false" style="height: calc(100% - {navHeight})">
+<main on:dragenter={dragenterHandler} ondragover="return false" style="height: calc(100% - {NAV_HEIGHT})">
   {#if dragover}
     <div
       class="dragover-notifier"
