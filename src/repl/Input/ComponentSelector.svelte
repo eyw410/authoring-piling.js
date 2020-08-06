@@ -7,6 +7,12 @@
 
   let editing = null;
 
+  const cleanTitle = title => {
+    return title.split('-')
+      .map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
+      .join(' ')
+  }
+
   function selectComponent(component) {
     if ($selected !== component) {
       editing = null;
@@ -187,13 +193,15 @@
 
   .input-sizer {
     color: #ccc;
+    left: 0;
+    top: 0;
   }
 
   input {
     position: absolute;
     width: 100%;
-    left: 16px;
-    top: 12px;
+    left: 11px;
+    top: 7px;
     font: 400 12px/1.5 var(--font);
     border: none;
     color: var(--flash);
@@ -309,7 +317,7 @@
           on:drop={dragEnd}>
           <i class="drag-handle" />
           {#if component.name === 'App' && component !== editing}
-            <div class="uneditable">App.svelte</div>
+            <div class="uneditable">App</div>
           {:else if component === editing}
             <span class="input-sizer">
               {editing.name + (/\./.test(editing.name) ? '' : `.${editing.type}`)}
@@ -329,7 +337,7 @@
               class="editable"
               title="edit component name"
               on:click={() => editTab(component)}>
-              {component.name}.{component.type}
+              {cleanTitle(component.name)}
             </div>
 
             <span class="remove" on:click={() => remove(component)}>
