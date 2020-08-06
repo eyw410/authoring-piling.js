@@ -30,9 +30,9 @@ export const readJsonFile = (file) => {
 export const serializeStores = (stores) =>
   stores
     ? Object.entries(stores).reduce((obj, [name, store]) => {
-        obj[name] = store.serialize();
-        return obj;
-      }, {})
+      obj[name] = store.serialize();
+      return obj;
+    }, {})
     : null;
 
 export const loadStores = (storageKey) => {

@@ -21,6 +21,7 @@
   export let fixedPos = 50;
   export let injectedJS = '';
   export let injectedCSS = '';
+  export let autoRun;
 
   const historyMap = new Map();
 

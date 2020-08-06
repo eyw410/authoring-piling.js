@@ -7,12 +7,13 @@
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
-  import { components } from './stores';
+  import { components, autoRun } from './stores';
 
   import {
     DEFAULT_COMPONENTS,
     DEFAULT_SVELTE_URL,
     DEFAULT_WORKERS_URL,
+    NAV_HEIGHT
   } from './constants';
 
   import { readJsonFile } from './utils';
@@ -29,7 +30,6 @@
   let data = JSON.parse($components[1].source);
   let init = false;
 
-  let height = '100%';
   let sources = {
     title: 'My Piling.js Project',
     components: $components,
@@ -56,6 +56,7 @@
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
         ].join('\n'),
+        autoRun: $autoRun
       },
     });
   });
@@ -84,6 +85,10 @@
     // We need to manually rebundle as subscribing to `components` would cause
     // doublicated bundling
     repl.rebundle();
+  }
+
+  function reset() {
+    repl.update(clone(replData));
   }
 
   let dragover = false;
@@ -124,6 +129,12 @@
 </script>
 
 <style>
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
+
   .dragover-notifier {
     position: absolute;
     z-index: 10;
@@ -133,26 +144,10 @@
     left: 0;
     background: rgba(240, 240, 240, 0.95);
   }
-
-  .repl-outer {
-    background-color: #fff;
-    --font: 'Inter', 'Open Sans', 'Helvetica', 'Verdana', sans-serif;
-    --font-mono: 'Inconsolata', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono',
-      'Courier New', monospace;
-    --prime: rgb(3, 102, 114);
-    --second: #676778;
-    --back-light: #f6fafd;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
 </style>
 
-<svelte:window bind:innerWidth={windowWidth} />
-<main on:dragenter={dragenterHandler} ondragover="return false">
+<svelte:window bind:innerWidth={windowWidth}/>
+<main on:dragenter={dragenterHandler} ondragover="return false" style="height: calc(100% - {NAV_HEIGHT})">
   {#if dragover}
     <div
       class="dragover-notifier"
@@ -161,31 +156,8 @@
       Drop it!
     </div>
   {/if}
-  <div class="repl-outer">
-    <div class="viewport">
-      <div class="w-expanded-95">
-        <div
-          class="flex flex-col font-sans border border-gray-100 shadow-md
-          rounded-lg"
-          style="height: 100vh">
-          <div
-            class="svelte-repl"
-            style="height:{height};"
-            bind:this={container} />
-        </div>
-      </div>
-    </div>
-  </div>
+  <div
+    class="svelte-repl"
+    style="height: 100%"
+    bind:this={container} />
 </main>
-<!--
-	.repl-outer {
-	  background-color: #fff;
-	  --font: "Inter", "Open Sans", "Helvetica", "Verdana", sans-serif;
-	  --font-mono: "Inconsolata", "Menlo", "Monaco", "Consolas", "Liberation Mono",
-	    "Courier New", monospace;
-	  --prime: rgb(3, 102, 114);
-	  --second: #676778;
-	  --back-light: #f6fafd;
-	}
-</style>
--->

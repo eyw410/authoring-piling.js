@@ -1,17 +1,18 @@
 import clone from 'just-clone';
 
-import { DEFAULT_COMPONENTS, STORAGE_KEY } from './constants';
+import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN } from './constants';
 import { serializableWritable, loadStores } from './utils';
 
 const prevStore = loadStores(STORAGE_KEY) || {};
 const _components = clone(prevStore.components || DEFAULT_COMPONENTS);
 const _selectedComponent = prevStore.selectedComponent
   ? _components.find(
-      (file) =>
-        file.name === prevStore.selectedComponent.name &&
-        file.type === prevStore.selectedComponent.type
-    ) || _components[0]
+    (file) =>
+      file.name === prevStore.selectedComponent.name &&
+      file.type === prevStore.selectedComponent.type
+  ) || _components[0]
   : _components[0];
+const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
 
 export const components = serializableWritable(_components);
 export const selectedComponent = serializableWritable(
@@ -24,3 +25,4 @@ export const selectedComponent = serializableWritable(
     return clonedValue;
   }
 );
+export const autoRun = serializableWritable(_autoRun);
