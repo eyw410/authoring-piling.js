@@ -22,6 +22,8 @@
   onDestroy(() => {
     unsubscribers.forEach((unsubscriber) => unsubscriber());
   });
+
+  let rebundleRepl;
 </script>
 
 <style>
@@ -38,7 +40,7 @@
 
 <Modal>
   <div class="repl-outer" style="height: 100vh">
-    <TopBar />
-    <Editor />
+    <TopBar on:rebundleMessage={rebundleRepl}/>
+    <Editor bind:rebundleRepl={rebundleRepl} />
   </div>
 </Modal>

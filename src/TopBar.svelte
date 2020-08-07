@@ -1,5 +1,5 @@
 <script>
-  import { getContext, onMount, onDestroy, tick } from 'svelte';
+  import { getContext, onMount, onDestroy, tick, createEventDispatcher } from 'svelte';
   import { get } from 'svelte/store';
   import Button from '@smui/button';
   import clone from 'just-clone';
@@ -7,7 +7,7 @@
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
-  import { components } from './stores';
+  import { components, autoRun } from './stores';
 
   import { readJsonFile } from './utils';
 
@@ -23,8 +23,13 @@
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
 
-  // Settings Modal
+  const dispatch = createEventDispatcher();
 
+  export let rebundle = () => {
+    dispatch('rebundleMessage', {});
+  };
+
+  // Settings Modal
   function showSettings() {
     openModal(Settings);
   }
@@ -61,6 +66,11 @@
     background-color: #000;
   }
 
+  .bar .autoRun button {
+    cursor: not-allowed;
+    background-color: transparent;
+  }
+
   /* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
   @media screen and (max-width: 500px) {
     .bar span {
@@ -74,11 +84,11 @@
   <div
     class="bar"
     style="height: {NAV_HEIGHT};">
-    <span>
+    <span class:autoRun={$autoRun}>
       <button
         class="bar-item"
         type="button"
-        on:click={() => {alert("Not implemented")}}>
+        on:click={() => {$autoRun ? openModal(Warning, { message: 'Auto-run is already on :)' }) : rebundle()}}>
         Run
       </button>
     </span>

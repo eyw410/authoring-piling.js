@@ -9,7 +9,7 @@
   import { is_browser } from './env.js';
   import PaneWithPanel from './Output/PaneWithPanel.svelte';
 
-  import { components, selectedComponent as selected } from '../stores.js';
+  import { components, selectedComponent as selected, autoRun } from '../stores.js';
 
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
@@ -21,7 +21,6 @@
   export let fixedPos = 50;
   export let injectedJS = '';
   export let injectedCSS = '';
-  export let autoRun;
 
   const historyMap = new Map();
 
@@ -141,7 +140,7 @@
       // recompile selected component
       output.update($selected, $compile_options);
 
-      rebundle();
+      $autoRun && rebundle();
 
       dispatch('change', {
         components: $components,

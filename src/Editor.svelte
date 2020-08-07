@@ -7,7 +7,7 @@
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
-  import { components, autoRun } from './stores';
+  import { components } from './stores';
 
   import {
     DEFAULT_COMPONENTS,
@@ -37,6 +37,7 @@
 
   let container;
   let repl;
+  export let rebundleRepl = () => {};
   let windowWidth;
 
   onMount(async () => {
@@ -55,10 +56,10 @@
           )};\nPIXI.utils.skipHello();\nwindow.PIXI=PIXI;})();`,
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
-        ].join('\n'),
-        autoRun: $autoRun
+        ].join('\n')
       },
     });
+    rebundleRepl = repl.rebundle;
   });
 
   onDestroy(() => {
