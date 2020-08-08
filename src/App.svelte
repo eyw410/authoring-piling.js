@@ -27,7 +27,8 @@
 </script>
 
 <style>
-  .repl-outer {
+  .app {
+    height: 100vh;
     background-color: #fff;
     --font: 'Inter', 'Open Sans', 'Helvetica', 'Verdana', sans-serif;
     --font-mono: 'Inconsolata', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono',
@@ -39,7 +40,7 @@
 </style>
 
 <Modal>
-  <div class="repl-outer" style="height: 100vh">
+  <div class="app">
     <TopBar on:rebundle={rebundle}/>
     <Editor bind:rebundle={rebundle} />
   </div>
