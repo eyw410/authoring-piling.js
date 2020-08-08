@@ -23,7 +23,7 @@
     unsubscribers.forEach((unsubscriber) => unsubscriber());
   });
 
-  let rebundleRepl;
+  let rebundle;
 </script>
 
 <style>
@@ -40,7 +40,7 @@
 
 <Modal>
   <div class="repl-outer" style="height: 100vh">
-    <TopBar on:rebundleMessage={rebundleRepl}/>
-    <Editor bind:rebundleRepl={rebundleRepl} />
+    <TopBar on:rebundle={rebundle}/>
+    <Editor bind:rebundle={rebundle} />
   </div>
 </Modal>

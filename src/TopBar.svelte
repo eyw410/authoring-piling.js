@@ -12,7 +12,7 @@
   const dispatch = createEventDispatcher();
 
   const rebundle = () => {
-    dispatch('rebundleMessage', {});
+    dispatch('rebundle');
   };
 
   // Settings Modal

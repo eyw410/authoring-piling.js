@@ -37,7 +37,7 @@
 
   let container;
   let repl;
-  export let rebundleRepl = () => {};
+  export let rebundle = () => {};
   let windowWidth;
 
   onMount(async () => {
@@ -59,7 +59,7 @@
         ].join('\n')
       },
     });
-    rebundleRepl = repl.rebundle;
+    rebundle = repl.rebundle;
   });
 
   onDestroy(() => {
