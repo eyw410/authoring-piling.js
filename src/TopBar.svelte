@@ -11,12 +11,16 @@
 
   const dispatch = createEventDispatcher();
 
-  const rebundle = () => {
-    dispatch('rebundle');
+  const runHandler = () => {
+    if ($autoRun) {
+      openModal(Warning, { message: 'Auto-run is already on :)' })
+    } else {
+      dispatch('rebundle');
+    }
   };
 
   // Settings Modal
-  function showSettings() {
+  function openSettingsHandler() {
     openModal(Settings);
   }
 </script>
@@ -52,7 +56,7 @@
     background-color: #000;
   }
 
-  .bar .autoRun button {
+  button:disabled {
     cursor: not-allowed;
     background-color: transparent;
   }
@@ -70,18 +74,17 @@
   <div
     class="bar"
     style="height: {NAV_HEIGHT};">
-    <span class:autoRun={$autoRun}>
+    <span>
       <button
         class="bar-item"
-        type="button"
-        on:click={() => {$autoRun ? openModal(Warning, { message: 'Auto-run is already on :)' }) : rebundle()}}>
+        disabled={$autoRun}
+        on:click={runHandler}>
         Run
       </button>
     </span>
     <span>
       <button
         class="bar-item"
-        type="button"
         on:click={() => {alert("Not implemented")}}>
         Reset
       </button>
@@ -89,7 +92,6 @@
     <span>
       <button
         class="bar-item"
-        type="button"
         on:click={() => {alert("Not implemented")}}>
         Import
       </button>
@@ -97,7 +99,6 @@
     <span>
       <button
         class="bar-item"
-        type="button"
         on:click={() => {alert("Not implemented")}}>
         Export
       </button>
@@ -105,8 +106,7 @@
     <span>
       <button
         class="bar-item"
-        type="button"
-        on:click={showSettings}>
+        on:click={openSettingsHandler}>
         Settings
       </button>
     </span>
