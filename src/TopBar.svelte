@@ -11,7 +11,7 @@
 
   const dispatch = createEventDispatcher();
 
-  export let rebundle = () => {
+  const rebundle = () => {
     dispatch('rebundleMessage', {});
   };
 
