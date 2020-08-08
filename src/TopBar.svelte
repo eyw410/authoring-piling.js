@@ -1,27 +1,13 @@
 <script>
-  import { getContext, onMount, onDestroy, tick, createEventDispatcher } from 'svelte';
-  import { get } from 'svelte/store';
-  import Button from '@smui/button';
-  import clone from 'just-clone';
-
-  import Error from './Error.svelte';
+  import { getContext, createEventDispatcher } from 'svelte';
   import Warning from './Warning.svelte';
 
-  import { components, autoRun } from './stores';
-
-  import { readJsonFile } from './utils';
-
-  import pilingJs from '../node_modules/piling.js/dist/piling.min';
-  import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
-  import umapJs from '../node_modules/umap-js/lib/umap-js.min';
-
-  import '../theme/_smui-theme.scss';
+  import { autoRun } from './stores';
 
   import { NAV_HEIGHT } from './constants.js';
   import Settings from './Settings.svelte';
 
   const { open: openModal } = getContext('simple-modal');
-  const svelteUrl = 'https://unpkg.com/svelte@latest';
 
   const dispatch = createEventDispatcher();
 
