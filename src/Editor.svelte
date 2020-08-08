@@ -37,7 +37,9 @@
 
   let container;
   let repl;
-  export let rebundle = () => {};
+  export const rebundle = () => {
+    if (repl && repl.rebundle) repl.rebundle();
+  };
   let windowWidth;
 
   onMount(async () => {
@@ -59,7 +61,6 @@
         ].join('\n')
       },
     });
-    rebundle = repl.rebundle;
   });
 
   onDestroy(() => {
