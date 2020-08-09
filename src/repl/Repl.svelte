@@ -235,7 +235,7 @@
     {fixed}>
     <section slot="a">
       <ComponentSelector {handle_select} />
-      <PaneWithPanel pos={100} panel="Custom Code">
+      <PaneWithPanel pos={50} panel="Custom Code">
         <div slot="main">buttons here</div>
 
         <div slot="panel-body" style="display: flex; height: 100%;">
