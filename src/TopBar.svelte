@@ -1,6 +1,8 @@
 <script>
   import { getContext, createEventDispatcher } from 'svelte';
   import Warning from './Warning.svelte';
+  import TopAppBar, {Row, Section, Title} from '@smui/top-app-bar';
+  import IconButton, { Icon } from '@smui/icon-button';
 
   import { autoRun } from './stores';
 
@@ -23,92 +25,36 @@
   function openSettingsHandler() {
     openModal(Settings);
   }
+
+  let dense = true;
+  let prominent = false;
+  let variant = 'standard';
+  let collapsed = false;
+  let title = 'Piling.js Authoring';
+
 </script>
 
 <style>
-  .bar {
-    width: 100%;
-    background-color: #555;
-    overflow: auto;
-  }
-
-  /* action labels */
-  .bar span {
-    float: left;
-    text-align: center;
-    color: white;
-    text-decoration: none;
-    font-size: 17px;
-    height: 100%;
-  }
-
-  .bar .bar-item {
-    background-color: transparent;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    border-radius: 0;
-    border: none;
-    color: #bfbfbf;
-  }
-
-  .bar span:hover {
-    background-color: #000;
-  }
-
-  button:disabled {
-    cursor: not-allowed;
-    background-color: transparent;
-  }
-
-  /* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
-  @media screen and (max-width: 500px) {
-    .bar span {
-      float: none;
-      display: block;
-    }
-  }
 </style>
 
-<div>
-  <div
-    class="bar"
-    style="height: {NAV_HEIGHT};">
-    <span>
-      <button
-        class="bar-item"
-        disabled={$autoRun}
+<div
+  class="bar"
+  style="height: {NAV_HEIGHT};">
+  <TopAppBar {dense} {prominent} {variant} bind:collapsed style="background-color: #333333">
+    <Row>
+      <Section>
+        <IconButton class="material-icons" aria-label="Run" disabled={$autoRun}
         on:click={runHandler}>
-        Run
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        on:click={() => {alert("Not implemented")}}>
-        Reset
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        on:click={() => {alert("Not implemented")}}>
-        Import
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        on:click={() => {alert("Not implemented")}}>
-        Export
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        on:click={openSettingsHandler}>
-        Settings
-      </button>
-    </span>
-  </div>
+          play_arrow
+        </IconButton>
+        <IconButton class="material-icons" aria-label="Reset">restore</IconButton>
+        <IconButton class="material-icons" aria-label="Import Project">publish</IconButton>
+        <Title>{title}</Title>
+      </Section>
+      <Section align="end" toolbar>
+        <IconButton class="material-icons" aria-label="Download">file_download</IconButton>
+        <IconButton class="material-icons" aria-label="Settings" on:click={openSettingsHandler}>settings</IconButton>
+      </Section>
+    </Row>
+  </TopAppBar>
 </div>
