@@ -22,8 +22,6 @@
   import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
   import umapJs from '../node_modules/umap-js/lib/umap-js.min';
 
-  import '../theme/_smui-theme.scss';
-
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
 

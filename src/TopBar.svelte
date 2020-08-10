@@ -35,12 +35,39 @@
 </script>
 
 <style>
+.bar :global(.mdc-top-app-bar) {
+    background-color: rgb(51, 51, 51);
+    color: white;
+}
+
+.bar :global(.mdc-fab__label) {
+    font-size: 6pt;
+}
+
+.bar :global(.mdc-fab) {
+    flex-direction: column;
+    width: 56px;
+    height: 48px;
+    border-radius: 0 !important;
+    background-color: rgb(51, 51, 51);
+    box-shadow: none;
+    color: white;
+}
+
+.bar :global(.mdc-fab:hover) {
+    box-shadow: none;
+    background-color: rgb(30, 30, 30);
+} 
+
+.bar :global(.mdc-fab:hover:disabled) {
+    cursor: not-allowed;
+}
 </style>
 
 <div
   class="bar"
   style="height: {NAV_HEIGHT};">
-  <TopAppBar {dense} {prominent} {variant} bind:collapsed style="background-color: #333333">
+  <TopAppBar {dense} {prominent} {variant} bind:collapsed>
     <Row>
       <Section>
         <Fab aria-label="Run" disabled={$autoRun} on:click={runHandler}>

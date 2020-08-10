@@ -8,8 +8,6 @@
   import { STORAGE_KEY, STORAGE_SAVE_DEBOUNCE } from './constants';
   import { saveStores, serializeStores } from './utils';
 
-  import '../theme/_smui-theme.scss';
-
   const saveStoresDb = debounce(() => {
     const serializedStore = serializeStores(stores);
     saveStores(STORAGE_KEY, serializedStore);
