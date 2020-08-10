@@ -13,6 +13,8 @@
       .join(' ')
   }
 
+  const requiredComponents = [ 'App', 'local-data', 'data', 'renderers', 'aggregators', 'view-spec' ]
+
   function selectComponent(component) {
     if ($selected !== component) {
       editing = null;
@@ -310,14 +312,14 @@
           class:drag-over={over === component.name}
           on:click={() => selectComponent(component)}
           on:dblclick={(e) => e.stopPropagation()}
-          draggable={component !== editing}
+          draggable={false}
           on:dragstart={dragStart}
           on:dragover={dragOver}
           on:dragleave={dragLeave}
           on:drop={dragEnd}>
           <i class="drag-handle" />
-          {#if component.name === 'App' && component !== editing}
-            <div class="uneditable">App</div>
+          {#if requiredComponents.includes(component.name) && component !== editing}
+            <div class="uneditable">{cleanTitle(component.name)}</div>
           {:else if component === editing}
             <span class="input-sizer">
               {editing.name + (/\./.test(editing.name) ? '' : `.${editing.type}`)}
