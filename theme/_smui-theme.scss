@@ -1,0 +1,25 @@
+.mdc-top-app-bar {
+    background-color: rgb(51, 51, 51);
+}
+
+.mdc-fab__label {
+    font-size: 6pt;
+}
+
+.mdc-fab {
+    flex-direction: column;
+    width: 56px;
+    height: 48px;
+    border-radius: 0 !important;
+    background-color: rgb(51, 51, 51);
+    box-shadow: none;
+}
+
+.mdc-fab:hover {
+    box-shadow: none;
+} 
+
+.mdc-fab:hover:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+}

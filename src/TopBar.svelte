@@ -2,7 +2,7 @@
   import { getContext, createEventDispatcher } from 'svelte';
   import Warning from './Warning.svelte';
   import TopAppBar, {Row, Section, Title} from '@smui/top-app-bar';
-  import IconButton, { Icon } from '@smui/icon-button';
+  import Fab, {Label, Icon} from '@smui/fab';
 
   import { autoRun } from './stores';
 
@@ -43,17 +43,25 @@
   <TopAppBar {dense} {prominent} {variant} bind:collapsed style="background-color: #333333">
     <Row>
       <Section>
-        <IconButton class="material-icons" aria-label="Run" disabled={$autoRun}
-        on:click={runHandler}>
-          play_arrow
-        </IconButton>
-        <IconButton class="material-icons" aria-label="Reset">restore</IconButton>
-        <IconButton class="material-icons" aria-label="Import Project">publish</IconButton>
+        <Fab aria-label="Run" disabled={$autoRun} on:click={runHandler}>
+          <Icon class="material-icons" dense={true}>play_arrow</Icon>
+          <Label>Run</Label>
+        </Fab>
+        <Fab aria-label="Import Project">
+        <Icon class="material-icons">publish</Icon>
+        <Label>Load Project</Label>
+        </Fab>
         <Title>{title}</Title>
       </Section>
       <Section align="end" toolbar>
-        <IconButton class="material-icons" aria-label="Download">file_download</IconButton>
-        <IconButton class="material-icons" aria-label="Settings" on:click={openSettingsHandler}>settings</IconButton>
+        <Fab aria-label="Settings" on:click={openSettingsHandler}>
+          <Icon class="material-icons">file_download</Icon>
+          <Label>Export</Label>
+        </Fab>
+        <Fab aria-label="Settings" on:click={openSettingsHandler}>
+          <Icon class="material-icons">settings</Icon>
+          <Label>Settings</Label>
+        </Fab>
       </Section>
     </Row>
   </TopAppBar>
