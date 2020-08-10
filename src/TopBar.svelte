@@ -41,13 +41,14 @@
 }
 
 .bar :global(.mdc-fab__label) {
-    font-size: 6pt;
+    padding-left: 5px;
+    font-size: 10pt;
 }
 
 .bar :global(.mdc-fab) {
-    flex-direction: column;
-    width: 56px;
+    width: auto;
     height: 48px;
+    padding: 0px 10px;
     border-radius: 0 !important;
     background-color: rgb(51, 51, 51);
     box-shadow: none;
