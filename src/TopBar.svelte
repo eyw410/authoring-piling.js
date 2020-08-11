@@ -6,6 +6,7 @@
 
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
+  import Examples from './Examples.svelte';
 
   import { components } from './stores';
 
@@ -23,11 +24,8 @@
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
 
-  // Settings Modal
-
-  function showSettings() {
-    openModal(Settings);
-  }
+  const open = (Component, props = {}, styles = {}) =>
+    () => openModal(Component, props, styles);
 </script>
 
 <style>
@@ -110,8 +108,16 @@
       <button
         class="bar-item"
         type="button"
-        on:click={showSettings}>
+        on:click={open(Settings)}>
         Settings
+      </button>
+    </span>
+    <span>
+      <button
+        class="bar-item"
+        type="button"
+        on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
+        Examples
       </button>
     </span>
   </div>

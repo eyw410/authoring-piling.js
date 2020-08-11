@@ -10,10 +10,9 @@
   import { components, autoRun } from './stores';
 
   import {
-    DEFAULT_COMPONENTS,
     DEFAULT_SVELTE_URL,
     DEFAULT_WORKERS_URL,
-    NAV_HEIGHT
+    NAV_HEIGHT,
   } from './constants';
 
   import { readJsonFile } from './utils';
@@ -56,7 +55,7 @@
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
         ].join('\n'),
-        autoRun: $autoRun
+        autoRun: $autoRun,
       },
     });
   });
@@ -146,8 +145,11 @@
   }
 </style>
 
-<svelte:window bind:innerWidth={windowWidth}/>
-<main on:dragenter={dragenterHandler} ondragover="return false" style="height: calc(100% - {NAV_HEIGHT})">
+<svelte:window bind:innerWidth={windowWidth} />
+<main
+  on:dragenter={dragenterHandler}
+  ondragover="return false"
+  style="height: calc(100% - {NAV_HEIGHT})">
   {#if dragover}
     <div
       class="dragover-notifier"
@@ -156,8 +158,5 @@
       Drop it!
     </div>
   {/if}
-  <div
-    class="svelte-repl"
-    style="height: 100%"
-    bind:this={container} />
+  <div class="svelte-repl" style="height: 100%" bind:this={container} />
 </main>
