@@ -1,5 +1,6 @@
 <script>
   import { getContext } from 'svelte';
+  import { DEFAULT_COMPONENTS_NAMED } from '../../constants.js';
 
   export let handle_select;
 
@@ -310,14 +311,14 @@
           class:drag-over={over === component.name}
           on:click={() => selectComponent(component)}
           on:dblclick={(e) => e.stopPropagation()}
-          draggable={component !== editing}
+          draggable={false}
           on:dragstart={dragStart}
           on:dragover={dragOver}
           on:dragleave={dragLeave}
           on:drop={dragEnd}>
           <i class="drag-handle" />
-          {#if component.name === 'App' && component !== editing}
-            <div class="uneditable">App</div>
+          {#if Object.keys(DEFAULT_COMPONENTS_NAMED).includes(component.name + '.' + component.type) && component !== editing}
+            <div class="uneditable">{cleanTitle(component.name)}</div>
           {:else if component === editing}
             <span class="input-sizer">
               {editing.name + (/\./.test(editing.name) ? '' : `.${editing.type}`)}
