@@ -134,6 +134,9 @@ export const DEFAULT_COMPONENTS = [
   DEFAULT_COMPONENT_STYLE,
 ];
 
+export const defaultDataName = 'data';
+export const defaultDataType = 'json';
+
 export const DEFAULT_COMPONENTS_NAMED = {
   'App.svelte': DEFAULT_COMPONENT_APP,
   'data.json': DEFAULT_COMPONENT_DATA_JSON,

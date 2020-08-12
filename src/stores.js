@@ -25,4 +25,9 @@ export const selectedComponent = serializableWritable(
     return clonedValue;
   }
 );
+export const jsonDataComponent = serializableWritable(_components.find(
+  (file) => {
+    return file.name === 'data' &&
+      file.type === 'json'
+  }));
 export const autoRun = serializableWritable(_autoRun);

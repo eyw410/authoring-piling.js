@@ -1,5 +1,5 @@
 <script>
-  import { setContext, createEventDispatcher } from 'svelte';
+  import { setContext, getContext, createEventDispatcher } from 'svelte';
   import { writable } from 'svelte/store';
   import SplitPane from './SplitPane.svelte';
   import ComponentSelector from './Input/ComponentSelector.svelte';
@@ -8,8 +8,11 @@
   import Bundler from './Bundler.js';
   import { is_browser } from './env.js';
   import PaneWithPanel from './Output/PaneWithPanel.svelte';
+  import CodeMirror from './CodeMirror.svelte';
 
-  import { components, selectedComponent as selected } from '../stores.js';
+  import { components, selectedComponent as selected, jsonDataComponent } from '../stores.js';
+
+  import { defaultDataName } from '../constants.js';
 
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
@@ -23,6 +26,7 @@
   export let injectedCSS = '';
   export let autoRun;
 
+  const topEditorHistoryMap = new Map();
   const historyMap = new Map();
 
   export function toJSON() {
@@ -43,6 +47,17 @@
 
     historyMap.clear();
     module_editor.clearHistory();
+
+    initTop();
+  }
+
+  async function initTop() {
+    await data_editor_ready;
+
+    await data_editor.set($jsonDataComponent.source, $jsonDataComponent.type);
+    output.set($jsonDataComponent, $compile_options);
+
+    data_editor.clearHistory();
   }
 
   // export function update(data) {
@@ -101,8 +116,19 @@
     (f) => (fulfil_module_editor_ready = f)
   );
 
+  let fulfill_data_editor_ready;
+  let data_editor_ready = new Promise(
+    (f) => (fulfill_data_editor_ready = f)
+  );
+
   let fulfil_output_ready;
   let output_ready = new Promise((f) => (fulfil_output_ready = f));
+
+  function splitName(fileName) {
+    const match = /^(.+)\.(\w+)$/.exec(fileName);
+    if (!match) return; // ???
+    return match;
+  }
 
   setContext('REPL', {
     components,
@@ -113,10 +139,7 @@
     rebundle,
 
     navigate: (item) => {
-      const match = /^(.+)\.(\w+)$/.exec(item.filename);
-      if (!match) return; // ???
-
-      const [, name, type] = match;
+      const [, name, type] = splitName(item.fileName);
       const component = $components.find(
         (c) => c.name === name && c.type === type
       );
@@ -148,6 +171,29 @@
       });
     },
 
+    handle_data_change: (event) => {
+      jsonDataComponent.update((component) => {
+        // TODO this is a bit hacky — we're relying on mutability
+        // so that updating components works... might be better
+        // if a) components had unique IDs, b) we tracked selected
+        // *index* rather than component, and c) `selected` was
+        // derived from `components` and `index`
+        component.source = event.detail.value;
+        return component;
+      });
+
+      components.update((c) => c);
+
+      // recompile selected component
+      output.update($jsonDataComponent, $compile_options);
+
+      rebundle();
+
+      dispatch('change', {
+        components: $components,
+      });
+    },
+
     register_module_editor(editor) {
       module_editor = editor;
       fulfil_module_editor_ready();
@@ -163,7 +209,9 @@
     },
   });
 
-  function handle_select(component) {
+  const { handle_data_change } = getContext('REPL');
+
+  const handle_select_historyMap = (historyMap, component) => {
     historyMap.set(get_component_name($selected), module_editor.getHistory());
     selected.set(component);
     module_editor.set(component.source, component.type);
@@ -175,9 +223,22 @@
     output.set($selected, $compile_options);
   }
 
+  function handle_select(component) {
+    handle_select_historyMap(historyMap, component);
+  }
+
   function get_component_name(component) {
     return `${component.name}.${component.type}`;
   }
+
+  function getComponentByName(fileName) {
+    const [, name, type] = splitName(fileName);
+    return $components.find(
+      (c) => c.name === name && c.type === type
+    );
+  }
+
+  let data_editor;
 
   let input;
   let sourceErrorLoc;
@@ -226,6 +287,14 @@
     width: 100%;
     height: 100%;
   }
+
+  .container :global(.editor-wrapper) {
+    height: 100%;
+  }
+
+  .container .editor-wrapper {
+    background: var(--back-light);
+  }
 </style>
 
 <div class="container" class:orientation>
@@ -234,15 +303,22 @@
     pos={fixed ? fixedPos : orientation === 'rows' ? 50 : 60}
     {fixed}>
     <section slot="a">
-      <ComponentSelector {handle_select} />
+      <ComponentSelector {handle_select} handle_data_select={initTop} />
       <PaneWithPanel pos={50} panel="Custom Code">
-        <div slot="main">buttons here</div>
+        <div slot="main">
+          {#if $selected.name === defaultDataName}
+            <div class="editor-wrapper">
+              <CodeMirror bind:this={data_editor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} ready={fulfill_data_editor_ready} />
+            </div>
+          {:else}
+          buttons here
+          {/if}
+        </div>
 
         <div slot="panel-body" style="display: flex; height: 100%;">
           <ModuleEditor
             bind:this={input}
-            errorLoc={sourceErrorLoc || runtimeErrorLoc}
-            style="height: 100%;" />
+            errorLoc={sourceErrorLoc || runtimeErrorLoc} />
         </div>
       </PaneWithPanel>
     </section>
