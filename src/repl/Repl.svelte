@@ -9,6 +9,7 @@
   import { is_browser } from './env.js';
   import PaneWithPanel from './Output/PaneWithPanel.svelte';
   import CodeMirror from './CodeMirror.svelte';
+  import { spring } from 'svelte/motion';
 
   import { components, selectedComponent as selected, jsonDataComponent } from '../stores.js';
 
@@ -258,6 +259,23 @@
   $: if (output && $selected) {
     output.update($selected, $compile_options);
   }
+
+  let pos = 50;
+  let previous_pos = 50;
+
+  const driver = spring(pos);
+  $: pos = $driver;
+
+  const toggleTop = () => {
+    driver.set(pos, { hard: true });
+
+    if (pos < 20) {
+      driver.set(previous_pos);
+    } else {
+      previous_pos = pos;
+      driver.set(0);
+    }
+  }
 </script>
 
 <style>
@@ -295,6 +313,20 @@
   .container .editor-wrapper {
     background: var(--back-light);
   }
+
+  .container .panel-header {
+    height: 42px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.5em;
+    cursor: pointer;
+  }
+
+  .container h3 {
+    font: 700 12px/1.5 var(--font);
+    color: #333;
+  }
 </style>
 
 <div class="container" class:orientation>
@@ -304,12 +336,15 @@
     {fixed}>
     <section slot="a">
       <ComponentSelector {handle_select} handle_data_select={initTop} />
-      <PaneWithPanel pos={50} panel="Custom Code">
+      <PaneWithPanel bind:pos panel={$selected.name === defaultDataName ? 'Data Transformer' : "Custom Code"}>
         <div slot="main">
+          <div class="panel-header" on:click={toggleTop}>
+            <h3>{$selected.name === defaultDataName ? 'Raw Data' : "Options"}</h3>
+          </div>
           {#if $selected.name === defaultDataName}
-            <div class="editor-wrapper">
-              <CodeMirror bind:this={data_editor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} ready={fulfill_data_editor_ready} />
-            </div>
+          <div class="editor-wrapper">
+            <CodeMirror bind:this={data_editor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} ready={fulfill_data_editor_ready} />
+          </div>
           {:else}
           buttons here
           {/if}
