@@ -25,7 +25,6 @@
   export let fixedPos = 50;
   export let injectedJS = '';
   export let injectedCSS = '';
-  export let autoRun;
 
   const topEditorHistoryMap = new Map();
   const historyMap = new Map();
@@ -53,7 +52,7 @@
   }
 
   async function initTop() {
-    await data_editor_ready;
+    await when_data_editor_ready;
 
     await data_editor.set($jsonDataComponent.source, $jsonDataComponent.type);
     output.set($jsonDataComponent, $compile_options);
@@ -118,7 +117,7 @@
   );
 
   let fulfill_data_editor_ready;
-  let data_editor_ready = new Promise(
+  let when_data_editor_ready = new Promise(
     (f) => (fulfill_data_editor_ready = f)
   );
 

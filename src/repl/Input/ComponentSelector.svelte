@@ -7,7 +7,7 @@
 
   function handleAnySelect(component) {
     handle_select(component);
-    if (component.name === defaultDataName && component.type === defaultDataType) {
+    if (component.name === defaultDataName) {
       handle_data_select();
     }
   }
