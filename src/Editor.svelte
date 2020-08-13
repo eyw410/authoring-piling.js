@@ -3,6 +3,7 @@
   import { get } from 'svelte/store';
   import Button from '@smui/button';
   import clone from 'just-clone';
+  import Papa from 'papaparse';
 
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
@@ -81,9 +82,8 @@
       _components[1].source = JSON.stringify(data, null, 2);
       return _components;
     });
-    // We need to manually rebundle as subscribing to `components` would cause
-    // doublicated bundling
-    repl.rebundle();
+    // Manually rebundle + reload the editor text
+    repl.init();
   }
 
   function reset() {
@@ -116,7 +116,19 @@
               openModal(Error, { message: 'Invalid JSON file' });
             });
           break;
-
+        case 'text/csv':
+        case 'text/tab-separated-values':
+          Papa.parse(event.dataTransfer.files[0], {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+              data = results.data;
+            },
+            error: (error) => {
+              openModal(Warning, { message: 'Invalid CSV or TSV file' });
+            }
+          });
+          break;
         default:
           openModal(Warning, { message: 'Unsupported file type!' });
           break;
