@@ -141,6 +141,10 @@
     <button class:active={view === 'css'} on:click={() => (view = 'css')}>
       CSS output
     </button>
+
+    <button class:active={view === 'intermediate'} on:click={() => (view = 'intermediate')}>
+      Intermediate View
+    </button>
   {/if}
 </div>
 
@@ -198,4 +202,11 @@
 <!-- markdown output -->
 <div class="tab-content" class:visible={selected_type === 'md'}>
   <iframe title="Markdown" srcdoc={markdown} />
+</div>
+
+<!-- intermediate output -->
+<div
+  class="tab-content"
+  class:visible={selected_type !== 'md' && view === 'intermediate'}>
+  <div>hi</div>
 </div>
