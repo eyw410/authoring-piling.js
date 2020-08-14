@@ -146,6 +146,8 @@ export const DEFAULT_COMPONENTS_NAMED = {
   'style.js': DEFAULT_COMPONENT_STYLE,
 };
 
+export const DATA_JSON_INDEX = Object.keys(DEFAULT_COMPONENTS_NAMED).indexOf('data.json')
+
 export const DEFAULT_SVELTE_URL = 'https://unpkg.com/svelte@latest';
 
 export const DEFAULT_WORKERS_URL = 'workers';

@@ -11,9 +11,9 @@
   import CodeMirror from './CodeMirror.svelte';
   import { spring } from 'svelte/motion';
 
-  import { components, selectedComponent as selected, jsonDataComponent } from '../stores.js';
+  import { components, selectedComponent as selected } from '../stores.js';
 
-  import { DEFAULT_DATA_NAME } from '../constants.js';
+  import { DEFAULT_DATA_NAME, DATA_JSON_INDEX} from '../constants.js';
 
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
@@ -53,9 +53,10 @@
 
   async function initTop() {
     await whenDataEditorReady;
+    console.log(`${$components[DATA_JSON_INDEX].source} lala`)
 
-    await dataEditor.set($jsonDataComponent.source, $jsonDataComponent.type);
-    output.set($jsonDataComponent, $compile_options);
+    await dataEditor.set($components[DATA_JSON_INDEX].source, $components[DATA_JSON_INDEX].type);
+    output.set($components[DATA_JSON_INDEX], $compile_options);
 
     dataEditor.clearHistory();
   }
@@ -172,20 +173,20 @@
     },
 
     handle_data_change: (event) => {
-      jsonDataComponent.update((component) => {
+      components.update((components) => {
         // TODO this is a bit hacky — we're relying on mutability
         // so that updating components works... might be better
         // if a) components had unique IDs, b) we tracked selected
         // *index* rather than component, and c) `selected` was
         // derived from `components` and `index`
-        component.source = event.detail.value;
-        return component;
+        components[DATA_JSON_INDEX].source = event.detail.value;
+        return components;
       });
 
       components.update((c) => c);
 
       // recompile selected component
-      output.update($jsonDataComponent, $compile_options);
+      output.update($components[DATA_JSON_INDEX], $compile_options);
 
       rebundle();
 
@@ -342,7 +343,7 @@
           </div>
           {#if $selected.name === DEFAULT_DATA_NAME}
           <div class="editor-wrapper">
-            <CodeMirror bind:this={dataEditor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} on:mount={fulfillDataEditorReady} />
+            <CodeMirror bind:this={dataEditor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} ready={fulfillDataEditorReady} />
           </div>
           {:else}
           buttons here
