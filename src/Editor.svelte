@@ -76,14 +76,14 @@
 
   $: ({ title, ...replData } = sources);
   $: repl && updateOrientation(windowWidth);
-  $: repl && repl.init();
+  $: repl && repl.refresh();
   $: if (repl && data) {
     components.update((_components) => {
       _components[1].source = JSON.stringify(data, null, 2);
       return _components;
     });
     // Manually rebundle + reload the editor text
-    repl.init();
+    repl.refresh();
   }
 
   function reset() {

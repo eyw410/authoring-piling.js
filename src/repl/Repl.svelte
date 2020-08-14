@@ -13,7 +13,7 @@
 
   import { components, selectedComponent as selected, jsonDataComponent } from '../stores.js';
 
-  import { defaultDataName } from '../constants.js';
+  import { DEFAULT_DATA_NAME } from '../constants.js';
 
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
@@ -36,7 +36,7 @@
     };
   }
 
-  export async function init() {
+  export async function refresh() {
     rebundle();
 
     await module_editor_ready;
@@ -52,12 +52,12 @@
   }
 
   async function initTop() {
-    await when_data_editor_ready;
+    await whenDataEditorReady;
 
-    await data_editor.set($jsonDataComponent.source, $jsonDataComponent.type);
+    await dataEditor.set($jsonDataComponent.source, $jsonDataComponent.type);
     output.set($jsonDataComponent, $compile_options);
 
-    data_editor.clearHistory();
+    dataEditor.clearHistory();
   }
 
   // export function update(data) {
@@ -116,9 +116,9 @@
     (f) => (fulfil_module_editor_ready = f)
   );
 
-  let fulfill_data_editor_ready;
-  let when_data_editor_ready = new Promise(
-    (f) => (fulfill_data_editor_ready = f)
+  let fulfillDataEditorReady;
+  let whenDataEditorReady = new Promise(
+    (f) => (fulfillDataEditorReady = f)
   );
 
   let fulfil_output_ready;
@@ -238,7 +238,7 @@
     );
   }
 
-  let data_editor;
+  let dataEditor;
 
   let input;
   let sourceErrorLoc;
@@ -335,14 +335,14 @@
     {fixed}>
     <section slot="a">
       <ComponentSelector {handle_select} handle_data_select={initTop} />
-      <PaneWithPanel bind:pos panel={$selected.name === defaultDataName ? 'Data Transformer' : "Custom Code"}>
+      <PaneWithPanel bind:pos panel={$selected.name === DEFAULT_DATA_NAME ? 'Data Transformer' : "Custom Code"}>
         <div slot="main">
           <div class="panel-header" on:click={toggleTop}>
-            <h3>{$selected.name === defaultDataName ? 'Raw Data' : "Options"}</h3>
+            <h3>{$selected.name === DEFAULT_DATA_NAME ? 'Raw Data' : "Options"}</h3>
           </div>
-          {#if $selected.name === defaultDataName}
+          {#if $selected.name === DEFAULT_DATA_NAME}
           <div class="editor-wrapper">
-            <CodeMirror bind:this={data_editor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} ready={fulfill_data_editor_ready} />
+            <CodeMirror bind:this={dataEditor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} on:mount={fulfillDataEditorReady} />
           </div>
           {:else}
           buttons here

@@ -1,13 +1,13 @@
 <script>
   import { getContext } from 'svelte';
-  import { DEFAULT_COMPONENTS_NAMED, defaultDataName, defaultDataType } from '../../constants.js';
+  import { DEFAULT_COMPONENTS_NAMED, DEFAULT_DATA_NAME, DEFAULT_DATA_TYPE } from '../../constants.js';
 
   export let handle_select;
   export let handle_data_select;
 
   function handleAnySelect(component) {
     handle_select(component);
-    if (component.name === defaultDataName) {
+    if (component.name === DEFAULT_DATA_NAME) {
       handle_data_select();
     }
   }
@@ -310,7 +310,7 @@
   {#if $components.length}
     <div class="file-tabs" on:dblclick={addNew}>
       {#each $components as component, index}
-        {#if !(component.name === defaultDataName && component.type === defaultDataType)}
+        {#if !(component.name === DEFAULT_DATA_NAME && component.type === DEFAULT_DATA_TYPE)}
           <div
             id={component.name}
             class="button"

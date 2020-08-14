@@ -152,8 +152,6 @@
       if (editor) editor.setValue(code || '');
     })();
 
-    if (ready) ready();
-
     return () => {
       destroyed = true;
       if (editor) editor.toTextArea();
