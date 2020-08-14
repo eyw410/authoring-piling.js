@@ -151,7 +151,7 @@
       await createEditor(mode || 'svelte');
       if (editor) editor.setValue(code || '');
 
-      if (ready) ready()
+      dispatch('editorReady');
     })();
 
     return () => {

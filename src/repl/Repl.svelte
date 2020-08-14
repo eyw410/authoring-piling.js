@@ -343,7 +343,7 @@
           </div>
           {#if $selected.name === DEFAULT_DATA_NAME}
           <div class="editor-wrapper">
-            <CodeMirror bind:this={dataEditor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} ready={fulfillDataEditorReady} />
+            <CodeMirror bind:this={dataEditor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} on:editorReady={fulfillDataEditorReady} />
           </div>
           {:else}
           buttons here
