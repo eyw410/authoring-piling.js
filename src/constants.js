@@ -134,6 +134,9 @@ export const DEFAULT_COMPONENTS = [
   DEFAULT_COMPONENT_STYLE,
 ];
 
+export const DEFAULT_DATA_NAME = 'data';
+export const DEFAULT_DATA_TYPE = 'json';
+
 export const DEFAULT_COMPONENTS_NAMED = {
   'App.svelte': DEFAULT_COMPONENT_APP,
   'data.json': DEFAULT_COMPONENT_DATA_JSON,
@@ -142,6 +145,8 @@ export const DEFAULT_COMPONENTS_NAMED = {
   'aggregators.js': DEFAULT_COMPONENT_AGGREGATORS,
   'style.js': DEFAULT_COMPONENT_STYLE,
 };
+
+export const DATA_JSON_INDEX = Object.keys(DEFAULT_COMPONENTS_NAMED).indexOf('data.json')
 
 export const INTERMEDIATE_DATA_APP = {
   type: 'svelte',

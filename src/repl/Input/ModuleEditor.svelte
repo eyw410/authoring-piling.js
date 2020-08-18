@@ -11,6 +11,7 @@
   } = getContext('REPL');
 
   export let errorLoc;
+  export let handle_select;
 
   let editor;
   onMount(() => {
