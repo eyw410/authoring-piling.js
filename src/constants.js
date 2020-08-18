@@ -18,8 +18,8 @@ export const DEFAULT_COMPONENT_APP = {
   import getData from './data.js';
   import * as renderers from './renderers.js';
   import * as aggregators from './aggregators.js';
-  import viewSpec from './view-spec.js';
-  import localData from './local-data.json';
+  import style from './style.js';
+  import localData from './data.json';
 
   const itemRenderer = renderers.itemRenderer || renderers.default;
   const coverRenderer = renderers.coverRenderer || null;
@@ -42,7 +42,7 @@ export const DEFAULT_COMPONENT_APP = {
         previewRenderer,
         coverAggregator,
         previewAggregator,
-        ...viewSpec
+        ...style
       }
     );
   });
@@ -65,13 +65,13 @@ export const DEFAULT_COMPONENT_APP = {
 <div bind:this={domElement} id="pilingjs-wrapper"></div>`,
 };
 
-export const DEFAULT_COMPONENT_LOCAL_DATA = {
+export const DEFAULT_COMPONENT_DATA_JSON = {
   type: 'json',
-  name: 'local-data',
+  name: 'data',
   source: JSON.stringify(DEFAULT_DATA, null, 2),
 };
 
-export const DEFAULT_COMPONENT_DATA = {
+export const DEFAULT_COMPONENT_DATA_JS = {
   type: 'js',
   name: 'data',
   source: `/* Load and wrangle the data in this file */
@@ -91,7 +91,7 @@ const itemRenderer = createImageRenderer();
 
 export {
   itemRenderer,
-  // Optionally
+  // Optionally define:
   // coverRenderer,
   // itemRenderer
 }`,
@@ -113,26 +113,99 @@ export {
 }`,
 };
 
-export const DEFAULT_COMPONENT_VIEW_SPEC = {
+export const DEFAULT_COMPONENT_STYLE = {
   type: 'js',
-  name: 'view-spec',
+  name: 'style',
   source: `/* Define the Piling.js view specification */
 
-const viewSpec = {
+const style = {
   columns: 3
 };
 
-export default viewSpec;`,
+export default style;`,
 };
 
 export const DEFAULT_COMPONENTS = [
   DEFAULT_COMPONENT_APP,
-  DEFAULT_COMPONENT_LOCAL_DATA,
-  DEFAULT_COMPONENT_DATA,
+  DEFAULT_COMPONENT_DATA_JSON,
+  DEFAULT_COMPONENT_DATA_JS,
   DEFAULT_COMPONENT_RENDERERS,
   DEFAULT_COMPONENT_AGGREGATORS,
-  DEFAULT_COMPONENT_VIEW_SPEC,
+  DEFAULT_COMPONENT_STYLE,
 ];
+
+export const DEFAULT_COMPONENTS_NAMED = {
+  'App.svelte': DEFAULT_COMPONENT_APP,
+  'data.json': DEFAULT_COMPONENT_DATA_JSON,
+  'data.js': DEFAULT_COMPONENT_DATA_JS,
+  'renderers.js': DEFAULT_COMPONENT_RENDERERS,
+  'aggregators.js': DEFAULT_COMPONENT_AGGREGATORS,
+  'style.js': DEFAULT_COMPONENT_STYLE,
+};
+
+export const INTERMEDIATE_DATA_APP = {
+  type: 'svelte',
+  name: 'App',
+  source: `<script>
+  import localData from './data.json';
+	import getData from './data.js';
+	
+	const whenItems = Promise.resolve(getData(localData));
+</script>
+
+<style>
+	pre.data {
+		white-space: pre-wrap;
+		word-break: break-all
+	}
+</style>
+
+{#await whenItems}
+  <p>Loading...</p>
+{:then items}
+	<pre class='data'>{JSON.stringify(items, null, 2)}</pre>
+{:catch error}
+	<p style="color: red">{error.message}</p>
+{/await}`
+}
+
+export const INTERMEDIATE_RENDERER_APP = {
+  type: 'svelte',
+  name: 'App',
+  source: `<script>
+  import localData from './data.json';
+	import getData from './data.js';
+	import * as renderers from './renderers.js'
+	
+	const whenItems = Promise.resolve(getData(localData));
+	const itemRenderer = renderers.itemRenderer || renderers.default;
+</script>
+
+<div id='images' />
+
+{#await whenItems}
+<p>Loading...</p>
+{:then items}
+{#await Promise.resolve(itemRenderer(
+      items.map(({ src }) => src)
+    ))}
+<p>Loading...</p> 
+{:then images}
+	{#each images as image}
+		<img src={image.src} alt="item"/>
+	{/each}
+{:catch error}
+<p style="color: red">{error.message}</p>
+{/await}
+{:catch error}
+<p style="color: red">{error.message}</p>
+{/await}`
+}
+
+export const INTERMEDIATE_APP_MAP = {
+  'data.js': INTERMEDIATE_DATA_APP,
+  'renderers.js': INTERMEDIATE_RENDERER_APP
+}
 
 export const DEFAULT_SVELTE_URL = 'https://unpkg.com/svelte@latest';
 

@@ -11,6 +11,8 @@
 
   import { components, selectedComponent as selected, autoRun } from '../stores.js';
 
+  import { INTERMEDIATE_APP_MAP } from '../constants.js';
+
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
   export let svelteUrl = `${packagesUrl}/svelte`;
@@ -94,6 +96,16 @@
     if (result && token === current_token) bundle.set(result);
   }
 
+  let view;
+  $: view === 'intermediate' ? bundleIntermediate() : rebundle();
+
+  async function bundleIntermediate() {
+    const token = (current_token = {});
+    const intermediateApp = INTERMEDIATE_APP_MAP[`${$selected.name}.${$selected.type}`] || $components[0];
+    const result = await bundler.bundle($components.slice(1).concat([intermediateApp]));
+    if (result && token === current_token) bundle.set(result);
+  }
+
   // TODO this is a horrible kludge, written in a panic. fix it
   let fulfil_module_editor_ready;
   let module_editor_ready = new Promise(
@@ -172,6 +184,9 @@
       module_editor.clearHistory();
     }
     output.set($selected, $compile_options);
+    if (view === 'intermediate') {
+      bundleIntermediate();
+    }
   }
 
   function get_component_name(component) {
@@ -234,7 +249,7 @@
     {fixed}>
     <section slot="a">
       <ComponentSelector {handle_select} />
-      <PaneWithPanel pos={100} panel="Custom Code">
+      <PaneWithPanel pos={50} panel="Custom Code">
         <div slot="main">buttons here</div>
 
         <div slot="panel-body" style="display: flex; height: 100%;">
@@ -254,7 +269,8 @@
         {embedded}
         {relaxed}
         {injectedJS}
-        {injectedCSS} />
+        {injectedCSS}
+        bind:view />
     </section>
   </SplitPane>
 </div>

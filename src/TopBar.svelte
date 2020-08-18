@@ -3,6 +3,7 @@
   import Warning from './Warning.svelte';
   import TopAppBar, {Row, Section, Title} from '@smui/top-app-bar';
   import Fab, {Label, Icon} from '@smui/fab';
+  import Examples from './Examples.svelte';
 
   import { autoRun } from './stores';
 
@@ -31,6 +32,9 @@
   let variant = 'standard';
   let collapsed = false;
   let title = 'Piling.js Authoring';
+
+  const open = (Component, props = {}, styles = {}) =>
+    () => openModal(Component, props, styles);
 
 </script>
 
@@ -78,6 +82,10 @@
         <Fab aria-label="Import Project">
         <Icon class="material-icons">publish</Icon>
         <Label>Load Project</Label>
+        </Fab>
+        <Fab aria-label="Examples" on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
+        <Icon class="material-icons">perm_media</Icon>
+        <Label>Examples</Label>
         </Fab>
         <Title>{title}</Title>
       </Section>
