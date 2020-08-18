@@ -8,8 +8,6 @@
   import { STORAGE_KEY, STORAGE_SAVE_DEBOUNCE } from './constants';
   import { saveStores, serializeStores } from './utils';
 
-  import '../theme/_smui-theme.scss';
-
   const saveStoresDb = debounce(() => {
     const serializedStore = serializeStores(stores);
     saveStores(STORAGE_KEY, serializedStore);
@@ -22,10 +20,13 @@
   onDestroy(() => {
     unsubscribers.forEach((unsubscriber) => unsubscriber());
   });
+
+  let rebundle;
 </script>
 
 <style>
-  .repl-outer {
+  .app {
+    height: 100vh;
     background-color: #fff;
     --font: 'Inter', 'Open Sans', 'Helvetica', 'Verdana', sans-serif;
     --font-mono: 'Inconsolata', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono',
@@ -37,8 +38,8 @@
 </style>
 
 <Modal>
-  <div class="repl-outer" style="height: 100vh">
-    <TopBar />
-    <Editor />
+  <div class="app">
+    <TopBar on:rebundle={rebundle}/>
+    <Editor bind:rebundle={rebundle} />
   </div>
 </Modal>

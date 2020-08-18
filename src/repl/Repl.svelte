@@ -11,7 +11,7 @@
   import CodeMirror from './CodeMirror.svelte';
   import { spring } from 'svelte/motion';
 
-  import { components, selectedComponent as selected } from '../stores.js';
+  import { components, selectedComponent as selected, autoRun } from '../stores.js';
 
   import { DEFAULT_DATA_NAME, DATA_JSON_INDEX, INTERMEDIATE_APP_MAP } from '../constants.js';
 
@@ -173,7 +173,7 @@
       // recompile selected component
       output.update($selected, $compile_options);
 
-      rebundle();
+      $autoRun && rebundle();
 
       dispatch('change', {
         components: $components,

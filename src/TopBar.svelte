@@ -1,124 +1,113 @@
 <script>
-  import { getContext, onMount, onDestroy, tick } from 'svelte';
-  import { get } from 'svelte/store';
-  import Button from '@smui/button';
-  import clone from 'just-clone';
-
-  import Error from './Error.svelte';
-  import Warning from './Warning.svelte';
+  import { getContext, createEventDispatcher } from 'svelte';
+  import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
+  import Fab, { Label, Icon } from '@smui/fab';
   import Examples from './Examples.svelte';
 
-  import { components } from './stores';
-
-  import { readJsonFile } from './utils';
-
-  import pilingJs from '../node_modules/piling.js/dist/piling.min';
-  import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
-  import umapJs from '../node_modules/umap-js/lib/umap-js.min';
-
-  import '../theme/_smui-theme.scss';
+  import { autoRun } from './stores';
 
   import { NAV_HEIGHT } from './constants.js';
   import Settings from './Settings.svelte';
 
   const { open: openModal } = getContext('simple-modal');
-  const svelteUrl = 'https://unpkg.com/svelte@latest';
+
+  const dispatch = createEventDispatcher();
+
+  const runHandler = () => dispatch('rebundle');
+
+  // Settings Modal
+  function openSettingsHandler() {
+    openModal(Settings);
+  }
+
+  let dense = true;
+  let prominent = false;
+  let variant = 'standard';
+  let collapsed = false;
+  let title = 'Piling.js Authoring';
 
   const open = (Component, props = {}, styles = {}) =>
     () => openModal(Component, props, styles);
+
 </script>
 
 <style>
-  .bar {
-    width: 100%;
-    background-color: #555;
-    overflow: auto;
-  }
-
-  /* action labels */
-  .bar span {
-    float: left;
-    text-align: center;
+.bar :global(.mdc-top-app-bar) {
+    background-color: rgb(51, 51, 51);
     color: white;
-    text-decoration: none;
-    font-size: 17px;
-    height: 100%;
-  }
+}
 
-  .bar .bar-item {
-    background-color: transparent;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    border-radius: 0;
-    border: none;
-    color: #bfbfbf;
-  }
+.bar :global(.mdc-fab__label) {
+    padding-left: 5px;
+    font-size: 10pt;
+}
 
-  .bar span:hover {
-    background-color: #000;
-  }
+.bar :global(.mdc-fab) {
+    width: auto;
+    height: 48px;
+    padding: 0px 10px;
+    border-radius: 0 !important;
+    background-color: rgb(51, 51, 51);
+    box-shadow: none;
+    color: white;
+}
 
-  /* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
-  @media screen and (max-width: 500px) {
-    .bar span {
-      float: none;
-      display: block;
-    }
-  }
+.bar :global(.mdc-fab:hover) {
+    box-shadow: none;
+    background-color: rgb(30, 30, 30);
+}
+
+.bar :global(.mdc-fab:disabled) {
+  cursor: not-allowed;
+  opacity: 0.66;
+}
+
+.bar :global(.mdc-fab:disabled:hover) {
+  background-color: inherit;
+}
 </style>
 
-<div>
-  <div
-    class="bar"
-    style="height: {NAV_HEIGHT};">
-    <span>
-      <button
-        class="bar-item"
-        type="button"
-        on:click={() => {alert("Not implemented")}}>
-        Run
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        type="button"
-        on:click={() => {alert("Not implemented")}}>
-        Reset
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        type="button"
-        on:click={() => {alert("Not implemented")}}>
-        Import
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        type="button"
-        on:click={() => {alert("Not implemented")}}>
-        Export
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        type="button"
-        on:click={open(Settings)}>
-        Settings
-      </button>
-    </span>
-    <span>
-      <button
-        class="bar-item"
-        type="button"
-        on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
-        Examples
-      </button>
-    </span>
-  </div>
+<div
+  class="bar"
+  style="height: {NAV_HEIGHT};">
+  <TopAppBar {dense} {prominent} {variant} bind:collapsed>
+    <Row>
+      <Section>
+        <span
+          class="auto-run"
+          title={$autoRun ? 'Auto-run is active. No need to click this button.' : ''}>
+          <Fab
+            aria-label="Run"
+            disabled={$autoRun}
+            on:click={runHandler}
+          >
+            <Icon
+              class="material-icons"
+              dense={true}
+            >{$autoRun ? 'autorenew' : 'play_arrow' }</Icon>
+            <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
+          </Fab>
+        </span>
+        <Fab aria-label="Import Project">
+        <Icon class="material-icons">publish</Icon>
+        <Label>Load Project</Label>
+        </Fab>
+        <Fab aria-label="Examples" on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
+        <Icon class="material-icons">perm_media</Icon>
+        <Label>Examples</Label>
+        </Fab>
+        <Title>{title}</Title>
+      </Section>
+      <Section align="end" toolbar>
+        <Fab aria-label="Settings" on:click={openSettingsHandler}>
+          <Icon class="material-icons">file_download</Icon>
+          <Label>Export</Label>
+        </Fab>
+        <Fab aria-label="Settings" on:click={openSettingsHandler}>
+          <Icon class="material-icons">settings</Icon>
+          <Label>Settings</Label>
+        </Fab>
+      </Section>
+    </Row>
+  </TopAppBar>
 </div>

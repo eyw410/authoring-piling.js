@@ -8,7 +8,7 @@
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
-  import { components, autoRun } from './stores';
+  import { components } from './stores';
 
   import {
     DEFAULT_SVELTE_URL,
@@ -21,8 +21,6 @@
   import pilingJs from '../node_modules/piling.js/dist/piling.min';
   import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
   import umapJs from '../node_modules/umap-js/lib/umap-js.min';
-
-  import '../theme/_smui-theme.scss';
 
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
@@ -37,6 +35,9 @@
 
   let container;
   let repl;
+  export const rebundle = () => {
+    if (repl && repl.rebundle) repl.rebundle();
+  };
   let windowWidth;
 
   onMount(async () => {
@@ -55,8 +56,7 @@
           )};\nPIXI.utils.skipHello();\nwindow.PIXI=PIXI;})();`,
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
-        ].join('\n'),
-        autoRun: $autoRun,
+        ].join('\n')
       },
     });
   });
