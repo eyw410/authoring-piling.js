@@ -69,7 +69,7 @@
   let css_editor;
   const setters = {};
 
-  let view = 'result';
+  export let view = 'result';
   let selected_type = '';
   let markdown = '';
 </script>
@@ -148,10 +148,10 @@
   {/if}
 </div>
 
-<!-- component viewer -->
+<!-- component viewer/intermediate output -->
 <div
   class="tab-content"
-  class:visible={selected_type !== 'md' && view === 'result'}>
+  class:visible={selected_type !== 'md' && (view === 'result' || view === 'intermediate')}>
   <Viewer
     bind:this={viewer}
     bind:error={runtimeError}
@@ -202,11 +202,4 @@
 <!-- markdown output -->
 <div class="tab-content" class:visible={selected_type === 'md'}>
   <iframe title="Markdown" srcdoc={markdown} />
-</div>
-
-<!-- intermediate output -->
-<div
-  class="tab-content"
-  class:visible={selected_type !== 'md' && view === 'intermediate'}>
-  <div>hi</div>
 </div>
