@@ -69,7 +69,7 @@
   let css_editor;
   const setters = {};
 
-  let view = 'result';
+  export let view = 'result';
   let selected_type = '';
   let markdown = '';
 </script>
@@ -141,13 +141,17 @@
     <button class:active={view === 'css'} on:click={() => (view = 'css')}>
       CSS output
     </button>
+
+    <button class:active={view === 'intermediate'} on:click={() => (view = 'intermediate')}>
+      Intermediate View
+    </button>
   {/if}
 </div>
 
-<!-- component viewer -->
+<!-- component viewer/intermediate output -->
 <div
   class="tab-content"
-  class:visible={selected_type !== 'md' && view === 'result'}>
+  class:visible={selected_type !== 'md' && (view === 'result' || view === 'intermediate')}>
   <Viewer
     bind:this={viewer}
     bind:error={runtimeError}
