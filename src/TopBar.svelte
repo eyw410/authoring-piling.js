@@ -14,13 +14,7 @@
 
   const dispatch = createEventDispatcher();
 
-  const runHandler = () => {
-    if ($autoRun) {
-      openModal(Warning, { message: 'Auto-run is already on :)' })
-    } else {
-      dispatch('rebundle');
-    }
-  };
+  const runHandler = () => dispatch('rebundle');
 
   // Settings Modal
   function openSettingsHandler() {
@@ -64,8 +58,9 @@
     background-color: rgb(30, 30, 30);
 } 
 
-.bar :global(.mdc-fab:hover:disabled) {
+.bar :global(.mdc-fab:disabled) {
     cursor: not-allowed;
+    color: #888;
 }
 </style>
 
@@ -76,8 +71,8 @@
     <Row>
       <Section>
         <Fab aria-label="Run" disabled={$autoRun} on:click={runHandler}>
-          <Icon class="material-icons" dense={true}>play_arrow</Icon>
-          <Label>Run</Label>
+          <Icon class={$autoRun ? "material-icons-outlined" : "material-icons"} dense={true}>play_arrow</Icon>
+          <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
         </Fab>
         <Fab aria-label="Import Project">
         <Icon class="material-icons">publish</Icon>
