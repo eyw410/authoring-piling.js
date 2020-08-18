@@ -53,8 +53,6 @@
 
   async function initTop() {
     await whenDataEditorReady;
-    console.log(`${$components[DATA_JSON_INDEX].source} lala`)
-
     await dataEditor.set($components[DATA_JSON_INDEX].source, $components[DATA_JSON_INDEX].type);
     output.set($components[DATA_JSON_INDEX], $compile_options);
 
@@ -127,7 +125,7 @@
 
   function splitName(fileName) {
     const match = /^(.+)\.(\w+)$/.exec(fileName);
-    if (!match) return; // ???
+    if (!match) return [];
     return match;
   }
 
@@ -260,6 +258,7 @@
     output.update($selected, $compile_options);
   }
 
+  // position of lower panel
   let pos = 50;
   let previous_pos = 50;
 

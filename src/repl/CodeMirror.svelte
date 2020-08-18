@@ -25,7 +25,6 @@
   export let flex = false;
   export let lineNumbers = true;
   export let tab = true;
-  export let ready = null;
 
   let w;
   let h;
