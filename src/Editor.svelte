@@ -25,7 +25,7 @@
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
 
-  let data = JSON.parse($components[1].source);
+  let data = JSON.parse($components[1].source || '[]');
   let init = false;
 
   let sources = {
