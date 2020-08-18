@@ -1,8 +1,7 @@
 <script>
   import { getContext, createEventDispatcher } from 'svelte';
-  import Warning from './Warning.svelte';
-  import TopAppBar, {Row, Section, Title} from '@smui/top-app-bar';
-  import Fab, {Label, Icon} from '@smui/fab';
+  import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
+  import Fab, { Label, Icon } from '@smui/fab';
   import Examples from './Examples.svelte';
 
   import { autoRun } from './stores';
@@ -56,11 +55,15 @@
 .bar :global(.mdc-fab:hover) {
     box-shadow: none;
     background-color: rgb(30, 30, 30);
-} 
+}
 
 .bar :global(.mdc-fab:disabled) {
-    cursor: not-allowed;
-    color: #888;
+  cursor: not-allowed;
+  opacity: 0.66;
+}
+
+.bar :global(.mdc-fab:disabled:hover) {
+  background-color: inherit;
 }
 </style>
 
@@ -70,10 +73,21 @@
   <TopAppBar {dense} {prominent} {variant} bind:collapsed>
     <Row>
       <Section>
-        <Fab aria-label="Run" disabled={$autoRun} on:click={runHandler}>
-          <Icon class={$autoRun ? "material-icons-outlined" : "material-icons"} dense={true}>play_arrow</Icon>
-          <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
-        </Fab>
+        <span
+          class="auto-run"
+          title={$autoRun ? 'Auto-run is active. No need to click this button.' : ''}>
+          <Fab
+            aria-label="Run"
+            disabled={$autoRun}
+            on:click={runHandler}
+          >
+            <Icon
+              class="material-icons"
+              dense={true}
+            >{$autoRun ? 'autorenew' : 'play_arrow' }</Icon>
+            <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
+          </Fab>
+        </span>
         <Fab aria-label="Import Project">
         <Icon class="material-icons">publish</Icon>
         <Label>Load Project</Label>
