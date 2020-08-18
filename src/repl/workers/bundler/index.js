@@ -213,19 +213,19 @@ async function get_bundle(uid, mode, cache, lookup) {
         cache[id] && cache[id].code === code
           ? cache[id].result
           : self.svelte.compile(
-              code,
-              Object.assign(
-                {
-                  generate: mode,
-                  format: 'esm',
-                  dev: true,
-                  filename: name + '.svelte',
-                },
-                has_loopGuardTimeout_feature() && {
-                  loopGuardTimeout: 100,
-                }
-              )
-            );
+            code,
+            Object.assign(
+              {
+                generate: mode,
+                format: 'esm',
+                dev: true,
+                filename: name + '.svelte',
+              },
+              has_loopGuardTimeout_feature() && {
+                loopGuardTimeout: 100,
+              }
+            )
+          );
 
       new_cache[id] = { code, result };
 

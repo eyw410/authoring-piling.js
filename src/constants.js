@@ -148,6 +148,70 @@ export const DEFAULT_COMPONENTS_NAMED = {
 
 export const DATA_JSON_INDEX = Object.keys(DEFAULT_COMPONENTS_NAMED).indexOf('data.json')
 
+export const INTERMEDIATE_DATA_APP = {
+  type: 'svelte',
+  name: 'App',
+  source: `<script>
+  import localData from './data.json';
+	import getData from './data.js';
+	
+	const whenItems = Promise.resolve(getData(localData));
+</script>
+
+<style>
+	pre.data {
+		white-space: pre-wrap;
+		word-break: break-all
+	}
+</style>
+
+{#await whenItems}
+  <p>Loading...</p>
+{:then items}
+	<pre class='data'>{JSON.stringify(items, null, 2)}</pre>
+{:catch error}
+	<p style="color: red">{error.message}</p>
+{/await}`
+}
+
+export const INTERMEDIATE_RENDERER_APP = {
+  type: 'svelte',
+  name: 'App',
+  source: `<script>
+  import localData from './data.json';
+	import getData from './data.js';
+	import * as renderers from './renderers.js'
+	
+	const whenItems = Promise.resolve(getData(localData));
+	const itemRenderer = renderers.itemRenderer || renderers.default;
+</script>
+
+<div id='images' />
+
+{#await whenItems}
+<p>Loading...</p>
+{:then items}
+{#await Promise.resolve(itemRenderer(
+      items.map(({ src }) => src)
+    ))}
+<p>Loading...</p> 
+{:then images}
+	{#each images as image}
+		<img src={image.src} alt="item"/>
+	{/each}
+{:catch error}
+<p style="color: red">{error.message}</p>
+{/await}
+{:catch error}
+<p style="color: red">{error.message}</p>
+{/await}`
+}
+
+export const INTERMEDIATE_APP_MAP = {
+  'data.js': INTERMEDIATE_DATA_APP,
+  'renderers.js': INTERMEDIATE_RENDERER_APP
+}
+
 export const DEFAULT_SVELTE_URL = 'https://unpkg.com/svelte@latest';
 
 export const DEFAULT_WORKERS_URL = 'workers';

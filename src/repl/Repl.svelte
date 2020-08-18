@@ -13,7 +13,7 @@
 
   import { components, selectedComponent as selected } from '../stores.js';
 
-  import { DEFAULT_DATA_NAME, DATA_JSON_INDEX} from '../constants.js';
+  import { DEFAULT_DATA_NAME, DATA_JSON_INDEX, INTERMEDIATE_APP_MAP } from '../constants.js';
 
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
@@ -106,6 +106,16 @@
   export async function rebundle() {
     const token = (current_token = {});
     const result = await bundler.bundle($components);
+    if (result && token === current_token) bundle.set(result);
+  }
+
+  let view;
+  $: view === 'intermediate' ? bundleIntermediate() : rebundle();
+
+  async function bundleIntermediate() {
+    const token = (current_token = {});
+    const intermediateApp = INTERMEDIATE_APP_MAP[`${$selected.name}.${$selected.type}`] || $components[0];
+    const result = await bundler.bundle($components.slice(1).concat([intermediateApp]));
     if (result && token === current_token) bundle.set(result);
   }
 
@@ -220,6 +230,9 @@
       module_editor.clearHistory();
     }
     output.set($selected, $compile_options);
+    if (view === 'intermediate') {
+      bundleIntermediate();
+    }
   }
 
   function handle_select(component) {
@@ -365,7 +378,8 @@
         {embedded}
         {relaxed}
         {injectedJS}
-        {injectedCSS} />
+        {injectedCSS}
+        bind:view />
     </section>
   </SplitPane>
 </div>
