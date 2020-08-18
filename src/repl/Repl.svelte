@@ -354,7 +354,7 @@
             <h3>{$selected.name === DEFAULT_DATA_NAME ? 'Raw Data' : "Options"}</h3>
           </div>
           {#if $selected.name === DEFAULT_DATA_NAME}
-          <div class="editor-wrapper">
+          <div class="editor-wrapper" style="height: calc(100% - 42px)">
             <CodeMirror bind:this={dataEditor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} on:editorReady={fulfillDataEditorReady} />
           </div>
           {:else}
