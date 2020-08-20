@@ -45,9 +45,25 @@ export const DEFAULT_COMPONENT_APP = {
         ...style
       }
     );
+		piling.subscribe('itemUpdate', () => {
+			const savedState = sessionStorage.getItem("state");
+			if (!savedState) return;
+			const stateObj = JSON.parse(sessionStorage.getItem("state"));
+			piling.importState({
+				...stateObj,
+				items,
+				itemRenderer,
+				coverRenderer,
+				previewRenderer,
+				coverAggregator,
+				previewAggregator,
+				...style
+			});
+		}, 1);
   });
 
   onDestroy(() => {
+		if (piling) sessionStorage.setItem("state", JSON.stringify(piling.exportState()));
     if (piling) piling.destroy();
   });
 </script>
