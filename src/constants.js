@@ -30,7 +30,7 @@ export const DEFAULT_COMPONENT_APP = {
 
   let domElement;
   let piling;
-	let hasLoaded = false;
+	let hasInitialized = false;
 
   onMount(async () => {
     const items = await Promise.resolve(getData(localData));
@@ -48,9 +48,11 @@ export const DEFAULT_COMPONENT_APP = {
     );
 		piling.subscribe('itemUpdate', () => {
       const savedState = sessionStorage.getItem("state");
-      hasLoaded = true;
-			if (!savedState) return;
-			const stateObj = JSON.parse(sessionStorage.getItem("state"));
+			if (!savedState) {
+        hasInitialized = true;
+        return;
+      };
+			const stateObj = JSON.parse(savedState);
 			piling.importState({
 				...stateObj,
 				items,
@@ -60,12 +62,13 @@ export const DEFAULT_COMPONENT_APP = {
 				coverAggregator,
 				previewAggregator,
 				...style
-			});
+      });
+      hasInitialized = true;
 		}, 1);
   });
 
   onDestroy(() => {
-		if (piling && hasLoaded) sessionStorage.setItem("state", JSON.stringify(piling.exportState()));
+		if (piling && hasInitialized) sessionStorage.setItem("state", JSON.stringify(piling.exportState()));
     if (piling) piling.destroy();
   });
 </script>
