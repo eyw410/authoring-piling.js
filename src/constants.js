@@ -29,7 +29,8 @@ export const DEFAULT_COMPONENT_APP = {
   const previewAggregator = renderers.previewAggregator || null;
 
   let domElement;
-  let piling
+  let piling;
+	let hasLoaded = false;
 
   onMount(async () => {
     const items = await Promise.resolve(getData(localData));
@@ -46,7 +47,8 @@ export const DEFAULT_COMPONENT_APP = {
       }
     );
 		piling.subscribe('itemUpdate', () => {
-			const savedState = sessionStorage.getItem("state");
+      const savedState = sessionStorage.getItem("state");
+      hasLoaded = true;
 			if (!savedState) return;
 			const stateObj = JSON.parse(sessionStorage.getItem("state"));
 			piling.importState({
@@ -63,7 +65,7 @@ export const DEFAULT_COMPONENT_APP = {
   });
 
   onDestroy(() => {
-		if (piling) sessionStorage.setItem("state", JSON.stringify(piling.exportState()));
+		if (piling && hasLoaded) sessionStorage.setItem("state", JSON.stringify(piling.exportState()));
     if (piling) piling.destroy();
   });
 </script>
@@ -92,7 +94,7 @@ export const DEFAULT_COMPONENT_DATA_JS = {
   name: 'data',
   source: `/* Load and wrangle the data in this file */
 
-const getData = (localData) => localData;
+const getData = (localData) => localData.map(el => ({"src": "https://upload.wikimedia.org/wikipedia/en/2/2d/SSU_Kirby_artwork.png" }));
 
 export default getData;`,
 };
