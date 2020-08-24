@@ -13,8 +13,8 @@ export const DEFAULT_COMPONENT_APP = {
   name: 'App',
   source: `<script>
   import { onDestroy, onMount } from 'svelte';
-  import createPilingJs from 'piling.js';
-
+  import { createLibraryFromState, createLibrary } from 'piling.js';
+	
   import getData from './data.js';
   import * as renderers from './renderers.js';
   import * as aggregators from './aggregators.js';
@@ -34,9 +34,8 @@ export const DEFAULT_COMPONENT_APP = {
 
   onMount(async () => {
     const items = await Promise.resolve(getData(localData));
-    piling = createPilingJs(
-      domElement,
-      {
+		const prevState = JSON.parse(sessionStorage.getItem("state"));
+		const initProps = {
         items,
         itemRenderer,
         coverRenderer,
@@ -44,32 +43,22 @@ export const DEFAULT_COMPONENT_APP = {
         coverAggregator,
         previewAggregator,
         ...style
-      }
-    );
-		piling.subscribe('itemUpdate', () => {
-      const savedState = sessionStorage.getItem("state");
-			if (!savedState) {
-        hasInitialized = true;
-        return;
       };
-			const stateObj = JSON.parse(savedState);
-			piling.importState({
-				...stateObj,
-				items,
-				itemRenderer,
-				coverRenderer,
-				previewRenderer,
-				coverAggregator,
-				previewAggregator,
-				...style
-      });
-      hasInitialized = true;
-		}, 1);
+    if (prevState) {
+			piling = await createLibraryFromState(domElement, {
+				...prevState,
+				...initProps,
+			});
+		} else {
+			piling = createLibrary(domElement, { ...initProps, items });
+		}
   });
 
   onDestroy(() => {
-		if (piling && hasInitialized) sessionStorage.setItem("state", JSON.stringify(piling.exportState()));
-    if (piling) piling.destroy();
+		if (piling) {
+			sessionStorage.setItem("state", JSON.stringify(piling.exportState()));
+			piling.destroy();
+		}
   });
 </script>
 
@@ -97,7 +86,7 @@ export const DEFAULT_COMPONENT_DATA_JS = {
   name: 'data',
   source: `/* Load and wrangle the data in this file */
 
-const getData = (localData) => localData.map(el => ({"src": "https://upload.wikimedia.org/wikipedia/en/2/2d/SSU_Kirby_artwork.png" }));
+const getData = (localData) => localData;
 
 export default getData;`,
 };

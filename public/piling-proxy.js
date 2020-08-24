@@ -1,5 +1,6 @@
 const {
   createLibrary,
+  createLibraryFromState,
   createMatrixPreviewAggregator,
   createMatrixCoverAggregator,
   createRepresentativeAggregator,
@@ -17,6 +18,7 @@ export default createPilingJs;
 
 export {
   createLibrary,
+  createLibraryFromState,
   createMatrixPreviewAggregator,
   createMatrixCoverAggregator,
   createRepresentativeAggregator,
