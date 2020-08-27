@@ -49,6 +49,7 @@
     "@smui/card": "^1.0.0",
     "@smui/fab": "^1.0.0",
     "@smui/icon-button": "^1.0.0",
+    "@smui/textfield": "^1.0.0",
     "@smui/top-app-bar": "^1.0.0",
     "acorn": "^7.3.1",
     "eslint": "^6.8.0",
