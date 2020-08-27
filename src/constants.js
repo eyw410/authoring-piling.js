@@ -48,7 +48,8 @@ export const DEFAULT_COMPONENT_APP = {
 			piling = await createLibraryFromState(domElement, {
 				...prevState,
 				...initProps,
-			});
+      });
+      piling.set('items', items);
 		} else {
 			piling = createLibrary(domElement, { ...initProps, items });
 		}
