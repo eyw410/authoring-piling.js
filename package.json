@@ -33,7 +33,7 @@
     "estree-walker": "^0.9.0",
     "marked": "^0.8.2",
     "papaparse": "^5.2.0",
-    "piling.js": "^0.7.4",
+    "piling.js": "^0.7.5",
     "pixi.js": "^5.1.6",
     "sourcemap-codec": "^1.4.6",
     "svelte": "^3.23.2",
