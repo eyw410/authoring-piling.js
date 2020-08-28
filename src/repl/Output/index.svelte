@@ -134,13 +134,13 @@
       Result
     </button>
 
-    <button class:active={view === 'js'} on:click={() => (view = 'js')}>
+    <!-- <button class:active={view === 'js'} on:click={() => (view = 'js')}>
       JS output
     </button>
 
     <button class:active={view === 'css'} on:click={() => (view = 'css')}>
       CSS output
-    </button>
+    </button> -->
 
     <button class:active={view === 'intermediate'} on:click={() => (view = 'intermediate')}>
       Intermediate View
@@ -162,7 +162,7 @@
 </div>
 
 <!-- js output -->
-<div
+<!-- <div
   class="tab-content"
   class:visible={selected_type !== 'md' && view === 'js'}>
   {#if embedded}
@@ -186,10 +186,10 @@
       </div>
     </PaneWithPanel>
   {/if}
-</div>
+</div> -->
 
 <!-- css output -->
-<div
+<!-- <div
   class="tab-content"
   class:visible={selected_type !== 'md' && view === 'css'}>
   <CodeMirror
@@ -197,7 +197,7 @@
     mode="css"
     errorLoc={sourceErrorLoc}
     readonly />
-</div>
+</div> -->
 
 <!-- markdown output -->
 <div class="tab-content" class:visible={selected_type === 'md'}>
