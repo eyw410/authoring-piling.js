@@ -33,7 +33,7 @@ export const DEFAULT_COMPONENT_APP = {
   let hasInitialized = false;
 
   onMount(async () => {
-		if (sessionStorage.getItem("clearState")) {
+		if (sessionStorage.getItem("clearState") || sessionStorage.getItem("alwaysResetPiles") === 'true') {
       sessionStorage.removeItem("state");
       sessionStorage.removeItem("clearState");
 		}

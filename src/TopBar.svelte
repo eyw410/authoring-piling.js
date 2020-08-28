@@ -2,6 +2,8 @@
   import { getContext, createEventDispatcher } from 'svelte';
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
   import Fab, { Label, Icon } from '@smui/fab';
+  import Menu from '@smui/menu';
+  import List, {Item, Text} from '@smui/list';
   import Examples from './Examples.svelte';
 
   import { autoRun } from './stores';
@@ -30,6 +32,12 @@
   let variant = 'standard';
   let collapsed = false;
   let title = 'Piling.js Authoring';
+  let menu;
+  let alwaysResetPiles = sessionStorage.getItem("alwaysResetPiles") === null ? 'false' : sessionStorage.getItem("alwaysResetPiles");
+
+  $: {
+    sessionStorage.setItem("alwaysResetPiles", alwaysResetPiles);
+  }
 
   const open = (Component, props = {}, styles = {}) =>
     () => openModal(Component, props, styles);
@@ -37,39 +45,39 @@
 </script>
 
 <style>
-.bar :global(.mdc-top-app-bar) {
-    background-color: rgb(51, 51, 51);
-    color: white;
-}
+  .bar :global(.mdc-top-app-bar) {
+      background-color: rgb(51, 51, 51);
+      color: white;
+  }
 
-.bar :global(.mdc-fab__label) {
-    padding-left: 5px;
-    font-size: 10pt;
-}
+  .bar :global(.mdc-fab__label) {
+      padding-left: 5px;
+      font-size: 10pt;
+  }
 
-.bar :global(.mdc-fab) {
-    width: auto;
-    height: 48px;
-    padding: 0px 10px;
-    border-radius: 0 !important;
-    background-color: rgb(51, 51, 51);
-    box-shadow: none;
-    color: white;
-}
+  .bar :global(.mdc-fab) {
+      width: auto;
+      height: 48px;
+      padding: 0px 10px;
+      border-radius: 0 !important;
+      background-color: rgb(51, 51, 51);
+      box-shadow: none;
+      color: white;
+  }
 
-.bar :global(.mdc-fab:hover) {
-    box-shadow: none;
-    background-color: rgb(30, 30, 30);
-}
+  .bar :global(.mdc-fab:hover) {
+      box-shadow: none;
+      background-color: rgb(30, 30, 30);
+  }
 
-.bar :global(.mdc-fab:disabled) {
-  cursor: not-allowed;
-  opacity: 0.66;
-}
+  .bar :global(.mdc-fab:disabled) {
+    cursor: not-allowed;
+    opacity: 0.66;
+  }
 
-.bar :global(.mdc-fab:disabled:hover) {
-  background-color: inherit;
-}
+  .bar :global(.mdc-fab:disabled:hover) {
+    background-color: inherit;
+  }
 </style>
 
 <div
@@ -97,10 +105,31 @@
           <Icon class="material-icons">publish</Icon>
           <Label>Load Project</Label>
         </Fab>
-        <Fab aria-label="Reset Piles" on:click={resetState}>
-          <Icon class="material-icons">restore</Icon>
-          <Label>Reset Piles</Label>
-        </Fab>
+        <div>
+          <Fab aria-label="Reset Piles" on:click={resetState}>
+            <Icon class="material-icons">restore</Icon>
+            <Label>Reset Piles</Label>
+            <div on:click|stopPropagation={(e) => menu.setOpen(true)}>
+              <Icon class="material-icons">arrow_drop_down</Icon>
+            </div>
+          </Fab>
+          <Menu bind:this={menu}>
+            <List>
+              <Item on:SMUI:action={() => alwaysResetPiles = 'false'}>
+                <Text>Preserve piles</Text>
+                {#if alwaysResetPiles === 'false'}
+                  &nbsp;&nbsp;<Icon class="material-icons">check</Icon>
+                {/if}
+                </Item>
+              <Item on:SMUI:action={() => alwaysResetPiles = 'true'}>
+                <Text>Always reset piles</Text>
+                {#if alwaysResetPiles === 'true'}
+                  &nbsp;&nbsp;<Icon class="material-icons">check</Icon>
+                {/if}
+              </Item>
+            </List>
+          </Menu>
+        </div>
         <Fab aria-label="Examples" on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
           <Icon class="material-icons">perm_media</Icon>
           <Label>Examples</Label>
