@@ -33,6 +33,10 @@ export const DEFAULT_COMPONENT_APP = {
   let hasInitialized = false;
 
   onMount(async () => {
+		if (sessionStorage.getItem("clearState")) {
+      sessionStorage.removeItem("state");
+      sessionStorage.removeItem("clearState");
+		}
     const items = await Promise.resolve(getData(localData));
     const prevState = JSON.parse(sessionStorage.getItem("state"));
     const initProps = {

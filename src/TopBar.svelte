@@ -20,6 +20,11 @@
     openModal(Settings);
   }
 
+  function resetState() {
+    sessionStorage.setItem("clearState", "true");
+    runHandler();
+  }
+
   let dense = true;
   let prominent = false;
   let variant = 'standard';
@@ -89,12 +94,16 @@
           </Fab>
         </span>
         <Fab aria-label="Import Project">
-        <Icon class="material-icons">publish</Icon>
-        <Label>Load Project</Label>
+          <Icon class="material-icons">publish</Icon>
+          <Label>Load Project</Label>
+        </Fab>
+        <Fab aria-label="Reset Piles" on:click={resetState}>
+          <Icon class="material-icons">restore</Icon>
+          <Label>Reset Piles</Label>
         </Fab>
         <Fab aria-label="Examples" on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
-        <Icon class="material-icons">perm_media</Icon>
-        <Label>Examples</Label>
+          <Icon class="material-icons">perm_media</Icon>
+          <Label>Examples</Label>
         </Fab>
         <Title>{title}</Title>
       </Section>
