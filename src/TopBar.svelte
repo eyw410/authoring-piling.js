@@ -90,9 +90,9 @@
             <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
           </Fab>
         </span>
-        <Fab aria-label="Import Files" on:click={open(Import, { refreshHandler })}>
+        <Fab aria-label="Import" on:click={open(Import, { refreshHandler })}>
         <Icon class="material-icons">publish</Icon>
-        <Label>Import Files</Label>
+        <Label>Import</Label>
         </Fab>
         <Fab aria-label="Examples" on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
         <Icon class="material-icons">perm_media</Icon>

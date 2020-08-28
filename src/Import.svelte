@@ -1,7 +1,6 @@
 <script>
 import { getContext } from 'svelte';
 import Papa from 'papaparse';
-import Textfield, {Input, Textarea} from '@smui/textfield';
 import Icon from '@smui/textfield/icon/index';
 import { readJsonFile } from './utils';
 
@@ -33,7 +32,7 @@ const dropHandler = (event) => {
 };
 
 const filesSubmit = (event) => {
-  event.preventDefault();
+  if (event) event.preventDefault();
 
   if (files.length) {
   switch (files[0].type) {
@@ -70,6 +69,10 @@ const filesSubmit = (event) => {
   }
 }
 
+$: if (files) {
+  filesSubmit(null);
+}
+
 const onSuccess = () => {
   components.update((_components) => {
     _components[1].source = JSON.stringify(data, null, 2);
@@ -97,10 +100,10 @@ const onSuccess = () => {
     flex-direction: column;
   }
   .fileLabel:hover {
-    background: #CCC;
+    background: #CCF;
   }
   .fileLabel:active {
-    background: #CCF;
+    background: #BBE;
   }
   .importForm .error {
     color: #9c273e;
@@ -119,9 +122,6 @@ const onSuccess = () => {
   }
 </style>
 
-<h1>
-  Import
-</h1>
 <form class='importForm' on:submit={filesSubmit}>
   {#if error}
   <div class="error">{error}</div>
@@ -131,7 +131,7 @@ const onSuccess = () => {
     ondragover="return false"
     on:drop={dropHandler}>
     <div class="content">
-      <input type="file" multiple bind:files={files} />
+      <input type="file" bind:files={files} />
       <div class="iconWrapper">
         <Icon class="material-icons addButton">add_circle_outline</Icon>
       </div>
@@ -146,6 +146,5 @@ const onSuccess = () => {
         { file.name }
       {/each}
     </ul>
-    <input type="submit">
   {/if}
 </form>

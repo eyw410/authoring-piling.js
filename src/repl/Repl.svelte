@@ -344,7 +344,7 @@
 
   .container button {
     color: #999;
-    font-size: 12px;
+    font-size: .75em;
     display: block;
   }
 
@@ -365,7 +365,7 @@
           <div class="panel-header" on:click={toggleTop}>
             <h3>{$selected.name === DEFAULT_DATA_NAME ? 'Raw Data' : "Options"}</h3>
             <button on:click|stopPropagation={openLoadDataModal}>
-              Load Data
+              Import Data
             </button>
           </div>
           {#if $selected.name === DEFAULT_DATA_NAME}
