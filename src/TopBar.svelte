@@ -90,7 +90,7 @@
             <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
           </Fab>
         </span>
-        <Fab aria-label="Import" on:click={open(Import, { refreshHandler })}>
+        <Fab aria-label="Import" on:click={open(Import, { refreshHandler }, { closeButton: false })}>
         <Icon class="material-icons">publish</Icon>
         <Label>Import</Label>
         </Fab>
