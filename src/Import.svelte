@@ -9,60 +9,57 @@ import { components } from './stores';
 export let refreshHandler;
 
 let data = JSON.parse($components[1].source || '[]');
-let dragover = false;
+let dragOver = false;
 let files;
 let error;
 
 const { close } = getContext('simple-modal');
 
-const dragenterHandler = () => {
-  dragover = true;
+const dragEnterHandler = (event) => {
+  dragOver = true;
 };
 
-const dragleaveHandler = async () => {
-  dragover = false;
+const dragLeaveHandler = () => {
+  dragOver = false;
 };
 
 const dropHandler = (event) => {
   event.preventDefault();
   error = '';
-
-  dragover = false;
+  dragOver = false;
   files = event.dataTransfer.files;
 };
 
-const filesSubmit = (event) => {
-  if (event) event.preventDefault();
-
+const filesSubmit = () => {
   if (files.length) {
-  switch (files[0].type) {
-    case 'application/json':
-      readJsonFile(files[0])
-        .then((newData) => {
-          data = newData;
-          onSuccess();
-        })
-        .catch((error) => {
-          error = 'Invalid JSON file';
+    switch (files[0].type) {
+      case 'application/json':
+        readJsonFile(files[0])
+          .then((newData) => {
+            data = newData;
+            onSuccess();
+          })
+          .catch(() => {
+            error = 'Invalid JSON file';
+          });
+        break;
+      case 'text/csv':
+      case 'text/tab-separated-values':
+        Papa.parse(files[0], {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            data = results.data;
+            onSuccess();
+          },
+          error: () => {
+            error = 'Invalid CSV or TSV file';
+          }
         });
-      break;
-    case 'text/csv':
-    case 'text/tab-separated-values':
-      Papa.parse(files[0], {
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          data = results.data;
-          onSuccess();
-        },
-        error: (error) => {
-          error = 'Invalid CSV or TSV file';
-        }
-      });
-      break;
-    default:
-      error = 'Unsupported file type'
-      break;
+        break;
+      default:
+        error = 'Unsupported file type'
+        break;
     }
   } else {
     error = 'Only drop files'
@@ -85,51 +82,74 @@ const onSuccess = () => {
 
 <style>
   .import {
-    height: 300px;
-    border: 2px dashed gray;
+    height: 20rem;
+    border: 1px dashed gray;
   }
+
+  .importForm {
+    position: relative;
+  }
+
   .fileLabel input[type="file"] {
-    position: absolute;
-    top: -1000px;
+    display: none;
   }
+
   .fileLabel {
-    border-radius: 10px;
-    background: #DDD;
+    border-radius: 0.5rem;
+    background: var(--gray-lightest);
     width: 100%;
     display: flex;
     flex-direction: column;
   }
-  .fileLabel:hover {
-    background: #CCF;
+
+  .fileLabel.dragOver {
+    background: var(--pink-light);
   }
-  .fileLabel:active {
-    background: #BBE;
-  }
+
   .importForm .error {
     color: #9c273e;
     margin-bottom: 20px;
   }
+
   .iconWrapper {
     text-align: center;
   }
+
   .fileLabel :global(.addButton) {
-    font-size: 48pt !important;
+    font-size: 3rem;
   }
 
   .fileLabel .content {
     margin: auto;
     text-align: center;
   }
+
+  .drag-leave-layer {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .dragOver .drag-leave-layer {
+    display: block;
+  }
 </style>
 
-<form class='importForm' on:submit={filesSubmit}>
+<div class="importForm">
   {#if error}
-  <div class="error">{error}</div>
+    <div class="error">{error}</div>
   {/if}
-  <label class="fileLabel import"
-    on:dragenter={dragenterHandler}
-    ondragover="return false"
-    on:drop={dropHandler}>
+  <label
+    class="fileLabel import"
+    class:dragOver
+    on:drop={dropHandler}
+    on:dragenter={dragEnterHandler}
+    ondragOver="return false"
+  >
     <div class="content">
       <input type="file" bind:files={files} />
       <div class="iconWrapper">
@@ -139,12 +159,6 @@ const onSuccess = () => {
         Drag and drop or click to upload data (.csv, .tsv, .json)
       </div>
     </div>
+    <div class="drag-leave-layer" on:dragleave={dragLeaveHandler} />
   </label>
-  {#if files}
-    <ul>
-      {#each files as file}
-        { file.name }
-      {/each}
-    </ul>
-  {/if}
-</form>
+</div>
