@@ -1,64 +1,126 @@
-html, body {
-	position: relative;
-	width: 100%;
-	height: 100%;
+/*
+ * -----------------------------------------------------------------------------
+ * Global styles
+ * -----------------------------------------------------------------------------
+ */
+
+:root {
+  --black: black;
+  --gray-darkest: #1a1a1a;
+  --gray-darker: #333333;
+  --gray-dark: #4d4d4d;
+  --gray-medium: #808080;
+  --gray-light: #b2b2b2;
+  --gray-lighter: #cccccc;
+  --gray-lightest: #e5e5e5;
+  --white: white;
+
+  --pink-dark: #d900ca;
+  --pink-dark-rgba: rgba(217, 0, 202, 0.95);
+  --pink-light: #ff7ff6;
+  --pink-light-rgba: rgba(255, 127, 246, 0.95);
+  --yellow-dark: #d9c900;
+  --yellow-light: #eee462;
+  --red-dark: #c76526;
+  --red-light: #ff8231;
+
+  --text-color: var(--gray-darker);
+  --bg-color: var(--white);
+  --primary-color: var(--pink-dark);
+  --primary-color-rgba: var(--pink-dark-rgba);
+  --primary-color-dark-mode: var(--pink-light);
+  --primary-color-dark-mode-rgba: var(--pink-light-rgba);
+  --time-normal: 0.2s;
+  --easing: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/*
+ * -----------------------------------------------------------------------------
+ * Global styles
+ * -----------------------------------------------------------------------------
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 16px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-	color: #333;
-	margin: 0;
-	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  color: #333;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 }
 
 a {
-	color: rgb(0,100,200);
-	text-decoration: none;
+  color: rgb(0, 100, 200);
+  text-decoration: none;
 }
 
 a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 a:visited {
-	color: rgb(0,80,160);
+  color: rgb(0, 80, 160);
 }
 
 label {
-	display: block;
+  display: block;
 }
 
-input, select, button, textarea {
-	font-family: inherit;
-	font-size: inherit;
-	padding: 0.4em;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
+input,
+select,
+button,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0.4em;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 2px;
 }
 
 input:disabled {
-	color: #ccc;
+  color: #ccc;
 }
 
-input[type="range"] {
-	height: 0;
+input[type='range'] {
+  height: 0;
 }
 
 button {
-	color: #333;
-	background-color: #f4f4f4;
-	outline: none;
+  color: #333;
+  background-color: #f4f4f4;
+  outline: none;
 }
 
 button:disabled {
-	color: #999;
+  color: #999;
 }
 
 button:not(:disabled):active {
-	background-color: #ddd;
+  background-color: #ddd;
 }
 
 button:focus {
-	border-color: #666;
+  border-color: #666;
 }
