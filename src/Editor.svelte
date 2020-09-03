@@ -41,7 +41,7 @@
     if (repl && repl.rebundle) repl.rebundle();
   };
   export const refresh = () => {
-    if (repl && repl.refresh) repl.refresh();
+    if (repl) repl.refresh();
   };
   let windowWidth;
 
