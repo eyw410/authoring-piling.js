@@ -7,7 +7,7 @@
 
   import { DEFAULT_COMPONENTS_NAMED } from './constants';
 
-  export let url = '';
+  export let gistId = '';
   export let width = '10rem';
 
   const { close } = getContext('simple-modal');
@@ -17,22 +17,28 @@
   let fileContent = {};
 
   const contentParser = ({ output, filename, content }) => output[filename] = content;
+  const metadataParser = ({ content }) => {
+    try {
+      const metadata = JSON.parse(content);
+      console.log(metadata);
+      title = metadata.title || title;
+      thumbnail = metadata.thumbnail || thumbnail;
+    } catch (e) {
+      console.error('Could not parse _pilingjs.json')
+    }
+  }
 
   const fileParsers = {
-    '_pilingjs.json': ({ content }) => {
-      try {
-        const metadata = JSON.parse(content);
-        title = metadata.title || title;
-        thumbnail = metadata.thumbnail || thumbnail;
-      } catch (e) {
-        console.error('Could not parse _pilingjs.json')
-      }
-    },
+    '_meta.json': metadataParser,
+    '_metadata.json': metadataParser,
+    '_piling.json': metadataParser,
+    '_pilingjs.json': metadataParser,
     'aggregators.js': contentParser,
     'data.js': contentParser,
     'data.json': contentParser,
+    'groupArrange.js': contentParser,
     'renderers.js': contentParser,
-    'style.json': contentParser,
+    'styles.js': contentParser,
   }
 
   function parseFiles(files) {
@@ -64,8 +70,8 @@
     close();
   }
 
-  $: if (url) {
-    fetch(`https://api.github.com/gists/${url}`)
+  $: if (gistId) {
+    fetch(`https://api.github.com/gists/${gistId}`)
       .then(async (response) => {
         const body = await response.json();
         return { body, status: response.status }
@@ -74,6 +80,7 @@
         if (status !== 200) {
           console.warn('Request unsuccessful', body.message);
         } else {
+          console.log('Request successful', body);
           title = body.description;
           parseFiles(body.files);
         }

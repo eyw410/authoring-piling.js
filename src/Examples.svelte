@@ -1,6 +1,8 @@
 <script>
   import Example from './Example.svelte';
-  const booksUrl = '73dd0de929033ddadb0313fa46257835';
+  const booksGistId = '73dd0de929033ddadb0313fa46257835';
+  const ridgePlotGistId = '81e7fb4f9cf5946f12639c383af97dc6';
+  const matrixGistId = '0bee19015958e5677a1fb476712b3803';
 </script>
 
 <style>
@@ -26,91 +28,18 @@
     <h2 class="mdc-typography--headline6">Images / Photos</h2>
     <ul>
       <li>
-        <Example url={booksUrl} />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
+        <Example gistId={booksGistId} />
       </li>
     </ul>
   </li>
   <li>
-    <h2 class="mdc-typography--headline6">Matrices / Heatmaps</h2>
+    <h2 class="mdc-typography--headline6">Information Visualization</h2>
     <ul>
       <li>
-        <Example url='' />
+        <Example gistId={ridgePlotGistId} />
       </li>
       <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-    </ul>
-  </li>
-  <li>
-    <h2 class="mdc-typography--headline6">Scatterplots</h2>
-    <ul>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-    </ul>
-  </li>
-  <li>
-    <h2 class="mdc-typography--headline6">Line-Area Charts</h2>
-    <ul>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
-      </li>
-      <li>
-        <Example url='' />
+        <Example gistId={matrixGistId} />
       </li>
     </ul>
   </li>
