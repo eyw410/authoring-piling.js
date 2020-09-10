@@ -1,2 +1,9 @@
-$mdc-theme-primary: #fcb8ab;
-$mdc-theme-secondary: #feeae6;
+@import '@material/theme/color-palette';
+
+$mdc-theme-primary: #d94acf;
+$mdc-theme-secondary: #367bbe;
+
+$mdc-theme-background: white;
+$mdc-theme-surface: white;
+
+$mdc-theme-error: $material-color-red-900;
