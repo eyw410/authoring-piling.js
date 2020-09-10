@@ -25,8 +25,8 @@ export const DEFAULT_COMPONENT_APP = {
   const coverRenderer = renderers.coverRenderer || null;
   const previewRenderer = renderers.previewRenderer || null;
 
-  const coverAggregator = renderers.coverAggregator || null;
-  const previewAggregator = renderers.previewAggregator || null;
+  const coverAggregator = aggregators.coverAggregator || null;
+  const previewAggregator = aggregators.previewAggregator || null;
 
   let domElement;
   let piling;
