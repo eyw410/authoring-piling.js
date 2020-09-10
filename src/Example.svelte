@@ -17,14 +17,13 @@
   let fileContent = {};
 
   const contentParser = ({ output, filename, content }) => output[filename] = content;
-  const metadataParser = ({ content }) => {
+  const metadataParser = ({ content, filename }) => {
     try {
       const metadata = JSON.parse(content);
-      console.log(metadata);
       title = metadata.title || title;
       thumbnail = metadata.thumbnail || thumbnail;
     } catch (e) {
-      console.error('Could not parse _pilingjs.json')
+      console.error(`Could not parse metadata (${filename})`)
     }
   }
 
@@ -80,7 +79,6 @@
         if (status !== 200) {
           console.warn('Request unsuccessful', body.message);
         } else {
-          console.log('Request successful', body);
           title = body.description;
           parseFiles(body.files);
         }
