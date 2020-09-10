@@ -5,12 +5,12 @@
   import Editor from './Editor.svelte';
   import TopBar from './TopBar.svelte';
   import * as stores from './stores';
-  import { STORAGE_KEY, STORAGE_SAVE_DEBOUNCE } from './constants';
+  import { STORAGE_SAVE_DEBOUNCE } from './constants';
   import { saveStores, serializeStores } from './utils';
 
   const saveStoresDb = debounce(() => {
     const serializedStore = serializeStores(stores);
-    saveStores(STORAGE_KEY, serializedStore);
+    saveStores(serializedStore);
   }, STORAGE_SAVE_DEBOUNCE);
 
   const unsubscribers = Object.values(stores).map((property) => {
@@ -39,7 +39,7 @@
 
 <Modal>
   <div class="app">
-    <TopBar on:rebundle={rebundle}/>
-    <Editor bind:rebundle={rebundle} />
+    <TopBar on:rebundle={rebundle} />
+    <Editor bind:rebundle />
   </div>
 </Modal>

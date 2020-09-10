@@ -29,6 +29,9 @@
     "lint": "eslint src/**/*.js src/**/*.svelte rollup.config.js"
   },
   "dependencies": {
+    "@smui/form-field": "^1.0.0",
+    "@smui/list": "^1.0.0",
+    "@smui/switch": "^1.0.0",
     "codemirror": "^5.49.2",
     "estree-walker": "^0.9.0",
     "marked": "^0.8.2",
