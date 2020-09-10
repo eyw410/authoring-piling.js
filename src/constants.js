@@ -36,7 +36,6 @@ export const DEFAULT_COMPONENT_APP = {
     const items = await Promise.resolve(getData(localData));
     const prevState = JSON.parse(sessionStorage.getItem("state"));
     const initProps = {
-        items,
         itemRenderer,
         coverRenderer,
         previewRenderer,
