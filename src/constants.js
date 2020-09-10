@@ -17,7 +17,7 @@ export const DEFAULT_COMPONENT_APP = {
   import { onDestroy, onMount } from 'svelte';
   import { createLibraryFromState, createLibrary } from 'piling.js';
 
-  import importedGetData from './data.js';
+  import getData from './data.js';
   import * as importedRenderes from './renderers.js';
   import * as importedAggregators from './aggregators.js';
   import * as importedStyles from './styles.js';
@@ -32,12 +32,18 @@ export const DEFAULT_COMPONENT_APP = {
   let hasInitialized = false;
 
   onMount(async () => {
-    const itemsOrGetData = await Promise.resolve((importedGetData || identity)(localData));
-    const items = await Promise.resolve(
-      isFunction(itemsOrGetData)
-        ? importedGetData({ domElement })(localData)
-        : itemsOrGetData
-    );
+    let items;
+    try {
+      items = (getData || identity)(localData);
+    } catch (e) {
+      // Either getData() is broken or it's actually a functional component
+    }
+
+    if (items === undefined || isFunction(items)) {
+      items = getData({ domElement })(localData);
+    }
+
+    items = await Promise.resolve(items);
 
     const renderers = importedRenderes.default && isFunction(importedRenderes.default)
       ? importedRenderes.default({ domElement })
@@ -67,7 +73,7 @@ export const DEFAULT_COMPONENT_APP = {
       ...styles
     };
 
-    if (prevState && false) {
+    if (prevState) {
       piling = await createLibraryFromState(domElement, {
         ...prevState,
         ...initProps,
@@ -75,7 +81,6 @@ export const DEFAULT_COMPONENT_APP = {
       piling.set('items', items);
     } else {
       piling = createLibrary(domElement, { ...initProps, items });
-      console.log({ ...initProps, items });
     }
 
     const groupArrange = importedGroupArrange.default && isFunction(importedGroupArrange.default)
@@ -115,51 +120,34 @@ export const DEFAULT_COMPONENT_DATA_JSON = {
 export const DEFAULT_COMPONENT_DATA_JS = {
   type: 'js',
   name: 'data',
-  source: `/* Load and wrangle the data in this file */
-
-const getData = (localData) => localData;
-
-export default getData;`,
+  source: `export default function data(localData) {
+  return localData;
+}`,
 };
 
 export const DEFAULT_COMPONENT_RENDERERS = {
   type: 'js',
   name: 'renderers',
-  source: `/* Define the item, cover, and preview renderer */
-import { createImageRenderer } from 'piling.js'
+  source: `import { createImageRenderer } from 'piling.js'
 
 const itemRenderer = createImageRenderer();
 
-export {
-  itemRenderer,
-  // Optionally define:
-  // coverRenderer,
-  // itemRenderer
-}`,
+export { itemRenderer }`,
 };
 
 export const DEFAULT_COMPONENT_AGGREGATORS = {
   type: 'js',
   name: 'aggregators',
-  source: `/* Implement the pile cover and preview aggregators */
-
-// Pick the median
+  source: `// Select the median item
 const coverAggregator = (items) => items[Math.round(items.length / 2)].src;
 
-// Both exports are optional
-export {
-  coverAggregator,
-  // or:
-  // previewAggregator
-}`,
+export { coverAggregator }`,
 };
 
 export const DEFAULT_COMPONENT_STYLES = {
   type: 'js',
   name: 'styles',
-  source: `/* Define the Piling.js view specification */
-
-const styles = {
+  source: `const styles = {
   columns: 3
 };
 
