@@ -46,7 +46,14 @@
         fileParsers[filename]({ output, filename, content });
       }
       return output;
-    }, {});
+    }, {
+      'aggregators.js': '',
+      'data.js': '',
+      'data.json': '[]',
+      'groupArrange.js': '',
+      'renderers.js': '',
+      'styles.js': ''
+    });
   }
 
   function loadExample() {
