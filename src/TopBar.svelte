@@ -6,7 +6,7 @@
   import List, {Item, Text} from '@smui/list';
   import Examples from './Examples.svelte';
 
-  import { autoRun } from './stores';
+  import { autoRun, alwaysPreservePiles } from './stores';
 
   import { NAV_HEIGHT } from './constants.js';
   import Settings from './Settings.svelte';
@@ -23,7 +23,7 @@
   }
 
   function resetState() {
-    sessionStorage.setItem("clearState", "true");
+    sessionStorage.setItem("resetPilesOnce", "true");
     runHandler();
   }
 
@@ -33,11 +33,6 @@
   let collapsed = false;
   let title = 'Piling.js Authoring';
   let menu;
-  let alwaysResetPiles = sessionStorage.getItem("alwaysResetPiles") === null ? 'false' : sessionStorage.getItem("alwaysResetPiles");
-
-  $: {
-    sessionStorage.setItem("alwaysResetPiles", alwaysResetPiles);
-  }
 
   const open = (Component, props = {}, styles = {}) =>
     () => openModal(Component, props, styles);
@@ -115,15 +110,15 @@
           </Fab>
           <Menu bind:this={menu}>
             <List>
-              <Item on:SMUI:action={() => alwaysResetPiles = 'false'}>
+              <Item on:SMUI:action={() => alwaysPreservePiles.update(val => true)}>
                 <Text>Preserve piles</Text>
-                {#if alwaysResetPiles === 'false'}
+                {#if $alwaysPreservePiles === true}
                   &nbsp;&nbsp;<Icon class="material-icons">check</Icon>
                 {/if}
                 </Item>
-              <Item on:SMUI:action={() => alwaysResetPiles = 'true'}>
+              <Item on:SMUI:action={() => alwaysPreservePiles.update(val => false)}>
                 <Text>Always reset piles</Text>
-                {#if alwaysResetPiles === 'true'}
+                {#if $alwaysPreservePiles === false}
                   &nbsp;&nbsp;<Icon class="material-icons">check</Icon>
                 {/if}
               </Item>

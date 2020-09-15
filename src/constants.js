@@ -1,5 +1,7 @@
 export const DEFAULT_AUTORUN = true;
 
+export const DEFAULT_ALWAYS_PRESERVE_PILES = true;
+
 export const NAV_HEIGHT = '48px';
 
 export const DEFAULT_DATA = Array(9)
@@ -33,9 +35,9 @@ export const DEFAULT_COMPONENT_APP = {
   let hasInitialized = false;
 
   onMount(async () => {
-		if (sessionStorage.getItem("clearState") || sessionStorage.getItem("alwaysResetPiles") === 'true') {
+		if (sessionStorage.getItem("resetPilesOnce") || sessionStorage.getItem("authoring-pilingjs") && JSON.parse(sessionStorage.getItem("authoring-pilingjs")).alwaysPreservePiles === false) {
       sessionStorage.removeItem("state");
-      sessionStorage.removeItem("clearState");
+      sessionStorage.removeItem("resetPilesOnce");
 		}
     const items = await Promise.resolve(getData(localData));
     const prevState = JSON.parse(sessionStorage.getItem("state"));
