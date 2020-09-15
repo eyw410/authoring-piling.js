@@ -2,6 +2,7 @@
 import { getContext } from 'svelte';
 import Papa from 'papaparse';
 import Icon from '@smui/textfield/icon/index';
+import Ripple from '@smui/ripple';
 import { readJsonFile } from './utils';
 
 import { components } from './stores';
@@ -149,6 +150,7 @@ const onSuccess = () => {
     on:drop={dropHandler}
     on:dragenter={dragEnterHandler}
     ondragOver="return false"
+    use:Ripple={{ripple: true, unbounded: false, color: 'primary'}}
   >
     <div class="content">
       <input type="file" bind:files={files} />
