@@ -18,7 +18,7 @@ export const DEFAULT_COMPONENT_APP = {
   import { createLibraryFromState, createLibrary } from 'piling.js';
 
   import getData from './data.js';
-  import * as importedRenderes from './renderers.js';
+  import * as importedRenderers from './renderers.js';
   import * as importedAggregators from './aggregators.js';
   import * as importedStyles from './styles.js';
   import * as importedGroupArrange from './group-arrange.js';
@@ -45,9 +45,9 @@ export const DEFAULT_COMPONENT_APP = {
 
     items = await Promise.resolve(items);
 
-    const renderers = importedRenderes.default && isFunction(importedRenderes.default)
-      ? importedRenderes.default({ domElement })
-      : importedRenderes;
+    const renderers = importedRenderers.default && isFunction(importedRenderers.default)
+      ? importedRenderers.default({ domElement })
+      : importedRenderers;
     const itemRenderer = renderers.itemRenderer;
     const coverRenderer = renderers.coverRenderer || null;
     const previewRenderer = renderers.previewRenderer || null;
@@ -253,9 +253,9 @@ export const INTERMEDIATE_RENDERER_APP = {
   let whenItems = new Promise();
 
   onMount(async () => {
-    const renderers = importedRenderes.default && isFunction(importedRenderes.default)
-      ? importedRenderes.default({ domElement })
-      : importedRenderes;
+    const renderers = importedRenderers.default && isFunction(importedRenderers.default)
+      ? importedRenderers.default({ domElement })
+      : importedRenderers;
     itemRenderer = renderers.itemRenderer;
 
     const itemsOrGetData = await Promise.resolve((importedGetData || identity)(localData));
