@@ -74,9 +74,9 @@ export const DEFAULT_COMPONENT_APP = {
     };
 
     if (prevState) {
-      piling = await createLibraryFromState(domElement, {
-        ...prevState,
-        ...initProps,
+			piling = await createLibraryFromState(domElement, {
+				...prevState,
+				...initProps,
       });
       piling.set('items', items);
     } else {

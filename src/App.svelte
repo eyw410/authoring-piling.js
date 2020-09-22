@@ -22,6 +22,7 @@
   });
 
   let rebundle;
+  let refresh;
 </script>
 
 <style>
@@ -39,7 +40,7 @@
 
 <Modal>
   <div class="app">
-    <TopBar on:rebundle={rebundle} />
-    <Editor bind:rebundle />
+    <TopBar on:rebundle={rebundle} on:refresh={refresh} />
+    <Editor bind:rebundle bind:refresh />
   </div>
 </Modal>

@@ -22,6 +22,8 @@
   import pixiJs from '../node_modules/pixi.js/dist/pixi.min';
   import umapJs from '../node_modules/umap-js/lib/umap-js.min';
 
+  import Import from './Import.svelte';
+
   const { open: openModal } = getContext('simple-modal');
   const svelteUrl = 'https://unpkg.com/svelte@latest';
 
@@ -38,7 +40,14 @@
   export const rebundle = () => {
     if (repl && repl.rebundle) repl.rebundle();
   };
+  export const refresh = () => {
+    if (repl) repl.refresh();
+  };
   let windowWidth;
+
+  const openLoadDataModal = () => {
+    openModal(Import, { refreshHandler: refresh }, {});
+  };
 
   onMount(async () => {
     // eslint-ignore-next-line
@@ -56,7 +65,8 @@
           )};\nPIXI.utils.skipHello();\nwindow.PIXI=PIXI;})();`,
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
-        ].join('\n')
+        ].join('\n'),
+        openLoadDataModal,
       },
     });
   });
@@ -89,54 +99,6 @@
   function reset() {
     repl.update(clone(replData));
   }
-
-  let dragover = false;
-
-  const dragenterHandler = () => {
-    dragover = true;
-  };
-
-  const dragleaveHandler = async () => {
-    dragover = false;
-  };
-
-  const dropHandler = (event) => {
-    event.preventDefault();
-
-    dragover = false;
-
-    if (event.dataTransfer.files.length) {
-      switch (event.dataTransfer.files[0].type) {
-        case 'application/json':
-          readJsonFile(event.dataTransfer.files[0])
-            .then((newData) => {
-              data = newData;
-            })
-            .catch((error) => {
-              openModal(Error, { message: 'Invalid JSON file' });
-            });
-          break;
-        case 'text/csv':
-        case 'text/tab-separated-values':
-          Papa.parse(event.dataTransfer.files[0], {
-            header: true,
-            skipEmptyLines: true,
-            complete: (results) => {
-              data = results.data;
-            },
-            error: (error) => {
-              openModal(Warning, { message: 'Invalid CSV or TSV file' });
-            }
-          });
-          break;
-        default:
-          openModal(Warning, { message: 'Unsupported file type!' });
-          break;
-      }
-    } else {
-      openModal(Warning, { message: 'Only drop files!' });
-    }
-  };
 </script>
 
 <style>
@@ -145,30 +107,9 @@
       max-width: none;
     }
   }
-
-  .dragover-notifier {
-    position: absolute;
-    z-index: 10;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(240, 240, 240, 0.95);
-  }
 </style>
 
 <svelte:window bind:innerWidth={windowWidth} />
-<main
-  on:dragenter={dragenterHandler}
-  ondragover="return false"
-  style="height: calc(100% - {NAV_HEIGHT})">
-  {#if dragover}
-    <div
-      class="dragover-notifier"
-      on:dragleave={dragleaveHandler}
-      on:drop={dropHandler}>
-      Drop it!
-    </div>
-  {/if}
+<main style="height: calc(100% - {NAV_HEIGHT})">
   <div class="svelte-repl" style="height: 100%" bind:this={container} />
 </main>

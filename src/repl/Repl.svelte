@@ -11,9 +11,17 @@
   import CodeMirror from './CodeMirror.svelte';
   import { spring } from 'svelte/motion';
 
-  import { components, selectedComponent as selected, autoRun } from '../stores.js';
+  import {
+    components,
+    selectedComponent as selected,
+    autoRun,
+  } from '../stores.js';
 
-  import { DEFAULT_DATA_NAME, DATA_JSON_INDEX, INTERMEDIATE_APP_MAP } from '../constants.js';
+  import {
+    DEFAULT_DATA_NAME,
+    DATA_JSON_INDEX,
+    INTERMEDIATE_APP_MAP,
+  } from '../constants.js';
 
   export let workersUrl;
   export let packagesUrl = 'https://unpkg.com';
@@ -25,6 +33,7 @@
   export let fixedPos = 50;
   export let injectedJS = '';
   export let injectedCSS = '';
+  export let openLoadDataModal;
 
   const topEditorHistoryMap = new Map();
   const historyMap = new Map();
@@ -53,7 +62,10 @@
 
   async function initTop() {
     await whenDataEditorReady;
-    await dataEditor.set($components[DATA_JSON_INDEX].source, $components[DATA_JSON_INDEX].type);
+    await dataEditor.set(
+      $components[DATA_JSON_INDEX].source,
+      $components[DATA_JSON_INDEX].type
+    );
     output.set($components[DATA_JSON_INDEX], $compile_options);
 
     dataEditor.clearHistory();
@@ -114,8 +126,12 @@
 
   async function bundleIntermediate() {
     const token = (current_token = {});
-    const intermediateApp = INTERMEDIATE_APP_MAP[`${$selected.name}.${$selected.type}`] || $components[0];
-    const result = await bundler.bundle($components.slice(1).concat([intermediateApp]));
+    const intermediateApp =
+      INTERMEDIATE_APP_MAP[`${$selected.name}.${$selected.type}`] ||
+      $components[0];
+    const result = await bundler.bundle(
+      $components.slice(1).concat([intermediateApp])
+    );
     if (result && token === current_token) bundle.set(result);
   }
 
@@ -126,9 +142,7 @@
   );
 
   let fulfillDataEditorReady;
-  let whenDataEditorReady = new Promise(
-    (f) => (fulfillDataEditorReady = f)
-  );
+  let whenDataEditorReady = new Promise((f) => (fulfillDataEditorReady = f));
 
   let fulfil_output_ready;
   let output_ready = new Promise((f) => (fulfil_output_ready = f));
@@ -146,6 +160,7 @@
     compile_options,
 
     rebundle,
+    refresh,
 
     navigate: (item) => {
       const [, name, type] = splitName(item.fileName);
@@ -196,7 +211,7 @@
       // recompile selected component
       output.update($components[DATA_JSON_INDEX], $compile_options);
 
-      rebundle();
+      $autoRun && rebundle();
 
       dispatch('change', {
         components: $components,
@@ -233,7 +248,7 @@
     if (view === 'intermediate') {
       bundleIntermediate();
     }
-  }
+  };
 
   function handle_select(component) {
     handle_select_historyMap(historyMap, component);
@@ -245,9 +260,7 @@
 
   function getComponentByName(fileName) {
     const [, name, type] = splitName(fileName);
-    return $components.find(
-      (c) => c.name === name && c.type === type
-    );
+    return $components.find((c) => c.name === name && c.type === type);
   }
 
   let dataEditor;
@@ -287,7 +300,7 @@
       previous_pos = pos;
       driver.set(0);
     }
-  }
+  };
 </script>
 
 <style>
@@ -339,6 +352,16 @@
     font: 700 12px/1.5 var(--font);
     color: #333;
   }
+
+  .container button {
+    color: #999;
+    font-size: 0.75em;
+    display: block;
+  }
+
+  .container button:hover {
+    color: #333;
+  }
 </style>
 
 <div class="container" class:orientation>
@@ -348,18 +371,27 @@
     {fixed}>
     <section slot="a">
       <ComponentSelector {handle_select} handle_data_select={initTop} />
-      <PaneWithPanel bind:pos panel={$selected.name === DEFAULT_DATA_NAME ? 'Data Transformer' : "Custom Code"}>
+      <PaneWithPanel
+        bind:pos
+        panel={$selected.name === DEFAULT_DATA_NAME ? 'Data Transformer' : 'Custom Code'}>
         <div slot="main">
           <div class="panel-header" on:click={toggleTop}>
-            <h3>{$selected.name === DEFAULT_DATA_NAME ? 'Raw Data' : "Options"}</h3>
+            <h3>
+              {$selected.name === DEFAULT_DATA_NAME ? 'Raw Data' : 'Options'}
+            </h3>
+            <button on:click|stopPropagation={openLoadDataModal}>
+              Import Data
+            </button>
           </div>
           {#if $selected.name === DEFAULT_DATA_NAME}
-          <div class="editor-wrapper" style="height: calc(100% - 42px)">
-            <CodeMirror bind:this={dataEditor} errorLoc={sourceErrorLoc || runtimeErrorLoc} on:change={handle_data_change} on:editorReady={fulfillDataEditorReady} />
-          </div>
-          {:else}
-          buttons here
-          {/if}
+            <div class="editor-wrapper" style="height: calc(100% - 42px)">
+              <CodeMirror
+                bind:this={dataEditor}
+                errorLoc={sourceErrorLoc || runtimeErrorLoc}
+                on:change={handle_data_change}
+                on:editorReady={fulfillDataEditorReady} />
+            </div>
+          {:else}buttons here{/if}
         </div>
 
         <div slot="panel-body" style="display: flex; height: 100%;">
