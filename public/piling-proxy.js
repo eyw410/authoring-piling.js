@@ -10,6 +10,7 @@ const {
   createMatrixRenderer,
   createRepresentativeRenderer,
   createSvgRenderer,
+  createUmap,
 } = window.pilingJs || {};
 
 const createPilingJs = createLibrary;
@@ -28,4 +29,5 @@ export {
   createMatrixRenderer,
   createRepresentativeRenderer,
   createSvgRenderer,
+  createUmap,
 };

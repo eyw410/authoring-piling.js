@@ -1,6 +1,8 @@
 import { get, writable } from 'svelte/store';
 import { identity } from '@flekschas/utils';
 
+import { STORAGE_KEY } from './constants';
+
 /**
  * Read a loaded JSON file.
  *
@@ -30,9 +32,9 @@ export const readJsonFile = (file) => {
 export const serializeStores = (stores) =>
   stores
     ? Object.entries(stores).reduce((obj, [name, store]) => {
-      obj[name] = store.serialize();
-      return obj;
-    }, {})
+        obj[name] = store.serialize();
+        return obj;
+      }, {})
     : null;
 
 export const loadStores = (storageKey) => {
@@ -49,8 +51,8 @@ export const loadStores = (storageKey) => {
   return savedStores;
 };
 
-export const saveStores = (storageKey, serializedStores) => {
-  sessionStorage.setItem(storageKey, JSON.stringify(serializedStores));
+export const saveStores = (serializedStores) => {
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(serializedStores));
 };
 
 export const serializableWritable = (initialValue, customSerializer = null) => {
@@ -63,4 +65,8 @@ export const serializableWritable = (initialValue, customSerializer = null) => {
     update: store.update,
     serialize,
   };
+};
+
+export const resetStores = () => {
+  sessionStorage.removeItem(STORAGE_KEY);
 };

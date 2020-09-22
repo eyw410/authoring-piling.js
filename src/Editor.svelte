@@ -66,7 +66,7 @@
           `(function(){${umapJs};})();`,
           `(function(){${pilingJs};})();`,
         ].join('\n'),
-        openLoadDataModal
+        openLoadDataModal,
       },
     });
   });

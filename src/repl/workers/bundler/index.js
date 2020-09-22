@@ -135,7 +135,6 @@ async function get_bundle(uid, mode, cache, lookup) {
 
       // importing from (probably) unpkg
       if (importee.startsWith('.')) {
-        console.log(`here is a url importee is ${importee}`);
         const url = new URL(importee, importer).href;
         self.postMessage({ type: 'status', uid, message: `resolving ${url}` });
 
@@ -213,19 +212,19 @@ async function get_bundle(uid, mode, cache, lookup) {
         cache[id] && cache[id].code === code
           ? cache[id].result
           : self.svelte.compile(
-            code,
-            Object.assign(
-              {
-                generate: mode,
-                format: 'esm',
-                dev: true,
-                filename: name + '.svelte',
-              },
-              has_loopGuardTimeout_feature() && {
-                loopGuardTimeout: 100,
-              }
-            )
-          );
+              code,
+              Object.assign(
+                {
+                  generate: mode,
+                  format: 'esm',
+                  dev: true,
+                  filename: name + '.svelte',
+                },
+                has_loopGuardTimeout_feature() && {
+                  loopGuardTimeout: 100,
+                }
+              )
+            );
 
       new_cache[id] = { code, result };
 

@@ -7,7 +7,7 @@
 
   import { DEFAULT_COMPONENTS_NAMED } from './constants';
 
-  export let url = '';
+  export let gistId = '';
   export let width = '10rem';
 
   const { close } = getContext('simple-modal');
@@ -17,22 +17,27 @@
   let fileContent = {};
 
   const contentParser = ({ output, filename, content }) => output[filename] = content;
+  const metadataParser = ({ content, filename }) => {
+    try {
+      const metadata = JSON.parse(content);
+      title = metadata.title || title;
+      thumbnail = metadata.thumbnail || thumbnail;
+    } catch (e) {
+      console.error(`Could not parse metadata (${filename})`)
+    }
+  }
 
   const fileParsers = {
-    '_pilingjs.json': ({ content }) => {
-      try {
-        const metadata = JSON.parse(content);
-        title = metadata.title || title;
-        thumbnail = metadata.thumbnail || thumbnail;
-      } catch (e) {
-        console.error('Could not parse _pilingjs.json')
-      }
-    },
+    '_meta.json': metadataParser,
+    '_metadata.json': metadataParser,
+    '_piling.json': metadataParser,
+    '_pilingjs.json': metadataParser,
     'aggregators.js': contentParser,
     'data.js': contentParser,
     'data.json': contentParser,
+    'groupArrange.js': contentParser,
     'renderers.js': contentParser,
-    'style.json': contentParser,
+    'styles.js': contentParser,
   }
 
   function parseFiles(files) {
@@ -41,7 +46,14 @@
         fileParsers[filename]({ output, filename, content });
       }
       return output;
-    }, {});
+    }, {
+      'aggregators.js': '',
+      'data.js': '',
+      'data.json': '[]',
+      'groupArrange.js': '',
+      'renderers.js': '',
+      'styles.js': ''
+    });
   }
 
   function loadExample() {
@@ -64,8 +76,8 @@
     close();
   }
 
-  $: if (url) {
-    fetch(`https://api.github.com/gists/${url}`)
+  $: if (gistId) {
+    fetch(`https://api.github.com/gists/${gistId}`)
       .then(async (response) => {
         const body = await response.json();
         return { body, status: response.status }

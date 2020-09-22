@@ -1,84 +1,84 @@
 <script>
-import { getContext } from 'svelte';
-import Papa from 'papaparse';
-import Icon from '@smui/textfield/icon/index';
-import Ripple from '@smui/ripple';
-import { readJsonFile } from './utils';
+  import { getContext } from 'svelte';
+  import Papa from 'papaparse';
+  import Icon from '@smui/textfield/icon/index';
+  import Ripple from '@smui/ripple';
+  import { readJsonFile } from './utils';
 
-import { components } from './stores';
+  import { components } from './stores';
 
-export let refreshHandler;
+  export let refreshHandler;
 
-let data = JSON.parse($components[1].source || '[]');
-let dragOver = false;
-let files;
-let error;
+  let data = JSON.parse($components[1].source || '[]');
+  let dragOver = false;
+  let files;
+  let error;
 
-const { close } = getContext('simple-modal');
+  const { close } = getContext('simple-modal');
 
-const dragEnterHandler = (event) => {
-  dragOver = true;
-};
+  const dragEnterHandler = (event) => {
+    dragOver = true;
+  };
 
-const dragLeaveHandler = () => {
-  dragOver = false;
-};
+  const dragLeaveHandler = () => {
+    dragOver = false;
+  };
 
-const dropHandler = (event) => {
-  event.preventDefault();
-  error = '';
-  dragOver = false;
-  files = event.dataTransfer.files;
-};
+  const dropHandler = (event) => {
+    event.preventDefault();
+    error = '';
+    dragOver = false;
+    files = event.dataTransfer.files;
+  };
 
-const filesSubmit = () => {
-  if (files.length) {
-    switch (files[0].type) {
-      case 'application/json':
-        readJsonFile(files[0])
-          .then((newData) => {
-            data = newData;
-            onSuccess();
-          })
-          .catch(() => {
-            error = 'Invalid JSON file';
+  const filesSubmit = () => {
+    if (files.length) {
+      switch (files[0].type) {
+        case 'application/json':
+          readJsonFile(files[0])
+            .then((newData) => {
+              data = newData;
+              onSuccess();
+            })
+            .catch(() => {
+              error = 'Invalid JSON file';
+            });
+          break;
+        case 'text/csv':
+        case 'text/tab-separated-values':
+          Papa.parse(files[0], {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+              data = results.data;
+              onSuccess();
+            },
+            error: () => {
+              error = 'Invalid CSV or TSV file';
+            },
           });
-        break;
-      case 'text/csv':
-      case 'text/tab-separated-values':
-        Papa.parse(files[0], {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            data = results.data;
-            onSuccess();
-          },
-          error: () => {
-            error = 'Invalid CSV or TSV file';
-          }
-        });
-        break;
-      default:
-        error = 'Unsupported file type'
-        break;
+          break;
+        default:
+          error = 'Unsupported file type';
+          break;
+      }
+    } else {
+      error = 'Only drop files';
     }
-  } else {
-    error = 'Only drop files'
+  };
+
+  $: if (files) {
+    filesSubmit(null);
   }
-}
 
-$: if (files) {
-  filesSubmit(null);
-}
-
-const onSuccess = () => {
-  components.update((_components) => {
-    _components[1].source = JSON.stringify(data, null, 2);
-    return _components;
-  });
-  refreshHandler();
-  close();
-}
+  const onSuccess = () => {
+    components.update((_components) => {
+      _components[1].source = JSON.stringify(data, null, 2);
+      return _components;
+    });
+    refreshHandler();
+    close();
+  };
 </script>
 
 <style>
@@ -91,7 +91,7 @@ const onSuccess = () => {
     position: relative;
   }
 
-  .fileLabel input[type="file"] {
+  .fileLabel input[type='file'] {
     display: none;
   }
 
@@ -150,16 +150,13 @@ const onSuccess = () => {
     on:drop={dropHandler}
     on:dragenter={dragEnterHandler}
     ondragOver="return false"
-    use:Ripple={{ripple: true, unbounded: false, color: 'primary'}}
-  >
+    use:Ripple={{ ripple: true, unbounded: false, color: 'primary' }}>
     <div class="content">
-      <input type="file" bind:files={files} />
+      <input type="file" bind:files />
       <div class="iconWrapper">
         <Icon class="material-icons addButton">add_circle_outline</Icon>
       </div>
-      <div>
-        Drag and drop or click to upload data (.csv, .tsv, .json)
-      </div>
+      <div>Drag and drop or click to upload data (.csv, .tsv, .json)</div>
     </div>
     <div class="drag-leave-layer" on:dragleave={dragLeaveHandler} />
   </label>

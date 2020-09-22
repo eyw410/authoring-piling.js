@@ -28,9 +28,8 @@
   let collapsed = false;
   let title = 'Piling.js Authoring';
 
-  const open = (Component, props = {}, styles = {}) =>
-    () => openModal(Component, props, styles);
-
+  const open = (Component, props = {}, styles = {}) => () =>
+    openModal(Component, props, styles);
 </script>
 
 <style>
@@ -69,34 +68,31 @@
   }
 </style>
 
-<div
-  class="bar"
-  style="height: {NAV_HEIGHT};">
+<div class="bar" style="height: {NAV_HEIGHT};">
   <TopAppBar {dense} {prominent} {variant} bind:collapsed>
     <Row>
       <Section>
         <span
           class="auto-run"
           title={$autoRun ? 'Auto-run is active. No need to click this button.' : ''}>
-          <Fab
-            aria-label="Run"
-            disabled={$autoRun}
-            on:click={runHandler}
-          >
-            <Icon
-              class="material-icons"
-              dense={true}
-            >{$autoRun ? 'autorenew' : 'play_arrow' }</Icon>
+          <Fab aria-label="Run" disabled={$autoRun} on:click={runHandler}>
+            <Icon class="material-icons" dense={true}>
+              {$autoRun ? 'autorenew' : 'play_arrow'}
+            </Icon>
             <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
           </Fab>
         </span>
-        <Fab aria-label="Import" on:click={open(Import, { refreshHandler }, { closeButton: false })}>
-        <Icon class="material-icons">publish</Icon>
-        <Label>Import</Label>
+        <Fab
+          aria-label="Import"
+          on:click={open(Import, { refreshHandler }, { closeButton: false })}>
+          <Icon class="material-icons">publish</Icon>
+          <Label>Import</Label>
         </Fab>
-        <Fab aria-label="Examples" on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
-        <Icon class="material-icons">perm_media</Icon>
-        <Label>Examples</Label>
+        <Fab
+          aria-label="Examples"
+          on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
+          <Icon class="material-icons">perm_media</Icon>
+          <Label>Examples</Label>
         </Fab>
         <Title>{title}</Title>
       </Section>
