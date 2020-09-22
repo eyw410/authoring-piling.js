@@ -3,6 +3,7 @@
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
   import Fab, { Label, Icon } from '@smui/fab';
   import Examples from './Examples.svelte';
+  import Import from './Import.svelte';
 
   import { autoRun } from './stores';
 
@@ -14,6 +15,7 @@
   const dispatch = createEventDispatcher();
 
   const runHandler = () => dispatch('rebundle');
+  const refreshHandler = () => dispatch('refresh');
 
   // Settings Modal
   function openSettingsHandler() {
@@ -32,17 +34,17 @@
 </script>
 
 <style>
-.bar :global(.mdc-top-app-bar) {
+  .bar :global(.mdc-top-app-bar) {
     background-color: rgb(51, 51, 51);
     color: white;
-}
+  }
 
-.bar :global(.mdc-fab__label) {
+  .bar :global(.mdc-fab__label) {
     padding-left: 5px;
     font-size: 10pt;
-}
+  }
 
-.bar :global(.mdc-fab) {
+  .bar :global(.mdc-fab) {
     width: auto;
     height: 48px;
     padding: 0px 10px;
@@ -50,21 +52,21 @@
     background-color: rgb(51, 51, 51);
     box-shadow: none;
     color: white;
-}
+  }
 
-.bar :global(.mdc-fab:hover) {
+  .bar :global(.mdc-fab:hover) {
     box-shadow: none;
     background-color: rgb(30, 30, 30);
-}
+  }
 
-.bar :global(.mdc-fab:disabled) {
-  cursor: not-allowed;
-  opacity: 0.66;
-}
+  .bar :global(.mdc-fab:disabled) {
+    cursor: not-allowed;
+    opacity: 0.66;
+  }
 
-.bar :global(.mdc-fab:disabled:hover) {
-  background-color: inherit;
-}
+  .bar :global(.mdc-fab:disabled:hover) {
+    background-color: inherit;
+  }
 </style>
 
 <div
@@ -88,9 +90,9 @@
             <Label>{$autoRun ? 'Auto-Run' : 'Run'}</Label>
           </Fab>
         </span>
-        <Fab aria-label="Import Project">
+        <Fab aria-label="Import" on:click={open(Import, { refreshHandler }, { closeButton: false })}>
         <Icon class="material-icons">publish</Icon>
-        <Label>Load Project</Label>
+        <Label>Import</Label>
         </Fab>
         <Fab aria-label="Examples" on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
         <Icon class="material-icons">perm_media</Icon>

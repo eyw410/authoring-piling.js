@@ -44,14 +44,14 @@ export const DEFAULT_COMPONENT_APP = {
         ...style
       };
     if (prevState) {
-      piling = await createLibraryFromState(domElement, {
-        ...prevState,
-        ...initProps,
+			piling = await createLibraryFromState(domElement, {
+				...prevState,
+				...initProps,
       });
       piling.set('items', items);
-    } else {
-      piling = createLibrary(domElement, { ...initProps, items });
-    }
+		} else {
+			piling = createLibrary(domElement, { ...initProps, items });
+		}
   });
 
   onDestroy(() => {

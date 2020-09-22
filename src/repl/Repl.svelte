@@ -25,6 +25,7 @@
   export let fixedPos = 50;
   export let injectedJS = '';
   export let injectedCSS = '';
+  export let openLoadDataModal;
 
   const topEditorHistoryMap = new Map();
   const historyMap = new Map();
@@ -146,6 +147,7 @@
     compile_options,
 
     rebundle,
+    refresh,
 
     navigate: (item) => {
       const [, name, type] = splitName(item.fileName);
@@ -196,7 +198,7 @@
       // recompile selected component
       output.update($components[DATA_JSON_INDEX], $compile_options);
 
-      rebundle();
+      $autoRun && rebundle();
 
       dispatch('change', {
         components: $components,
@@ -339,6 +341,16 @@
     font: 700 12px/1.5 var(--font);
     color: #333;
   }
+
+  .container button {
+    color: #999;
+    font-size: .75em;
+    display: block;
+  }
+
+  .container button:hover {
+    color: #333;
+  }
 </style>
 
 <div class="container" class:orientation>
@@ -352,6 +364,9 @@
         <div slot="main">
           <div class="panel-header" on:click={toggleTop}>
             <h3>{$selected.name === DEFAULT_DATA_NAME ? 'Raw Data' : "Options"}</h3>
+            <button on:click|stopPropagation={openLoadDataModal}>
+              Import Data
+            </button>
           </div>
           {#if $selected.name === DEFAULT_DATA_NAME}
           <div class="editor-wrapper" style="height: calc(100% - 42px)">
