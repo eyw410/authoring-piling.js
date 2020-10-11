@@ -152,6 +152,10 @@
     }
     from = over = null;
   }
+
+  const isRequired = (component) => {
+    return Object.keys(DEFAULT_COMPONENTS_NAMED).includes(component.name + '.' + component.type) && component !== editing
+  }
 </script>
 
 <style>
@@ -320,13 +324,15 @@
             class:drag-over={over === component.name}
             on:click={() => selectComponent(component)}
             on:dblclick={(e) => e.stopPropagation()}
-            draggable={false}
+            draggable={component !== editing && !isRequired(component)}
             on:dragstart={dragStart}
             on:dragover={dragOver}
             on:dragleave={dragLeave}
             on:drop={dragEnd}>
+            {#if !isRequired(component)}
             <i class="drag-handle" />
-            {#if Object.keys(DEFAULT_COMPONENTS_NAMED).includes(component.name + '.' + component.type) && component !== editing}
+            {/if}
+            {#if isRequired(component)}
               <div class="uneditable">{cleanTitle(component.name)}</div>
             {:else if component === editing}
               <span class="input-sizer">
