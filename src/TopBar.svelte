@@ -90,7 +90,7 @@
         </Fab>
         <Fab
           aria-label="Examples"
-          on:click={open(Examples, {}, { styleWindow: { width: '45rem' } })}>
+          on:click={open(Examples, { refreshHandler }, { styleWindow: { width: '45rem' } })}>
           <Icon class="material-icons">perm_media</Icon>
           <Label>Examples</Label>
         </Fab>

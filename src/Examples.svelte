@@ -3,6 +3,8 @@
   const booksGistId = '73dd0de929033ddadb0313fa46257835';
   const ridgePlotGistId = '81e7fb4f9cf5946f12639c383af97dc6';
   const matrixGistId = '0bee19015958e5677a1fb476712b3803';
+
+  export let refreshHandler;
 </script>
 
 <style>
@@ -28,7 +30,7 @@
     <h2 class="mdc-typography--headline6">Images / Photos</h2>
     <ul>
       <li>
-        <Example gistId={booksGistId} />
+        <Example gistId={booksGistId} refreshHandler={refreshHandler} />
       </li>
     </ul>
   </li>

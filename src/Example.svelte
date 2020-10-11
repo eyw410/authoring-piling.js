@@ -9,6 +9,7 @@
 
   export let gistId = '';
   export let width = '10rem';
+  export let refreshHandler;
 
   const { close } = getContext('simple-modal');
 
@@ -74,6 +75,7 @@
     });
     // Needs to trigger re-run
     close();
+    refreshHandler();
   }
 
   $: if (gistId) {
