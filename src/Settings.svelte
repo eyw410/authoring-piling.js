@@ -1,5 +1,4 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
   import Button, { Label } from '@smui/button';
   import List, { Item, Meta, Separator, Text } from '@smui/list';
   import Switch from '@smui/switch';
@@ -23,51 +22,54 @@
 
 <style>
   h2 {
+    margin: 1.5rem 0 .75rem 0;
     font-size: 1rem;
-    text-align: center;
   }
 
-  #settings :global(.item) {
-    overflow: visible;
+  h2:first-child {
+    margin-top: .5rem;
   }
 
-  #settings :global(.indent) {
-    padding-left: 40px;
-    height: 20px;
+  #settings :global(.list) {
+    border: 1px solid rgba(0,0,0,.12);
+    border-radius: 0.25rem;
   }
 </style>
 
 <div id="settings">
-  <h2>Settings</h2>
-  <List dense nonInteractive>
+  <h2>Authoring Tool</h2>
+  <List class="list" dense nonInteractive>
     <Item ripple={false} class="item">
-      <Label>Run automatically</Label>
+      <Label>Run automatically on code changes</Label>
       <Meta>
         <Switch bind:checked={$autoRun} color="secondary" />
       </Meta>
     </Item>
     <Separator />
     <Item ripple={false}>
-      <Text>Authoring tool cache</Text>
+      <Text>App cache</Text>
       <Meta>
         <Button on:click={resetStoresAndReload} color="secondary" dense>
-          <Label>Reset and Reload</Label>
+          <Label>Reset</Label>
         </Button>
+      </Meta>
+    </Item>
+  </List>
+  <h2>Piling State</h2>
+  <List class="list" dense nonInteractive>
+    <Item ripple={false}>
+      <Text>Preserve piling state on code changes</Text>
+      <Meta>
+        <Switch bind:checked={$alwaysPreservePiles} color="secondary" />
       </Meta>
     </Item>
     <Separator />
     <Item ripple={false}>
-      <Text>Reset piling view state</Text>
+      <Text>Piling state</Text>
       <Meta>
         <Button on:click={resetPilingState} color="secondary" dense>
-          <Label>Reset Piles</Label>
+          <Label>Reset</Label>
         </Button>
-      </Meta>
-    </Item>
-    <Item ripple={false} class="item indent">
-      <Text>Always preserve piles</Text>
-      <Meta>
-        <Switch bind:checked={$alwaysPreservePiles} color="secondary" />
       </Meta>
     </Item>
   </List>
