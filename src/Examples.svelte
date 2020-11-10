@@ -38,10 +38,10 @@
     <h2 class="mdc-typography--headline6">Information Visualization</h2>
     <ul>
       <li>
-        <Example gistId={ridgePlotGistId} />
+        <Example gistId={ridgePlotGistId} refreshHandler={refreshHandler} />
       </li>
       <li>
-        <Example gistId={matrixGistId} />
+        <Example gistId={matrixGistId} refreshHandler={refreshHandler} />
       </li>
     </ul>
   </li>
