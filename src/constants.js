@@ -1,5 +1,7 @@
 export const DEFAULT_AUTORUN = true;
 
+export const DEFAULT_ALWAYS_PRESERVE_PILES = true;
+
 export const NAV_HEIGHT = '48px';
 
 export const STORAGE_KEY_PILING_STATE = 'authoring-pilingjs-piling-state';
@@ -62,7 +64,12 @@ export const DEFAULT_COMPONENT_APP = {
       ? importedStyles.default({ domElement })
       : importedStyles.default || {};
 
-    const prevState = JSON.parse(sessionStorage.getItem("${STORAGE_KEY_PILING_STATE}"));
+    let prevState = JSON.parse(sessionStorage.getItem("${STORAGE_KEY_PILING_STATE}"));
+    if (sessionStorage.getItem("resetPilesOnce") || sessionStorage.getItem("authoring-pilingjs") && JSON.parse(sessionStorage.getItem("authoring-pilingjs")).alwaysPreservePiles === false) {
+      sessionStorage.removeItem("${STORAGE_KEY_PILING_STATE}");
+      sessionStorage.removeItem("resetPilesOnce");
+      prevState = null;
+		}
 
     const initProps = {
       itemRenderer,

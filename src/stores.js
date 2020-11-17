@@ -1,6 +1,6 @@
 import clone from 'just-clone';
 
-import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN } from './constants';
+import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_ALWAYS_PRESERVE_PILES } from './constants';
 import { serializableWritable, loadStores } from './utils';
 
 const prevStore = loadStores(STORAGE_KEY) || {};
@@ -13,6 +13,7 @@ const _selectedComponent = prevStore.selectedComponent
   ) || _components[0]
   : _components[0];
 const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
+const _alwaysPreservePiles = prevStore.alwaysPreservePiles || DEFAULT_ALWAYS_PRESERVE_PILES;
 
 export const components = serializableWritable(_components);
 export const selectedComponent = serializableWritable(
@@ -26,3 +27,4 @@ export const selectedComponent = serializableWritable(
   }
 );
 export const autoRun = serializableWritable(_autoRun);
+export const alwaysPreservePiles = serializableWritable(_alwaysPreservePiles);
