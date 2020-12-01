@@ -1,6 +1,10 @@
 export const DEFAULT_AUTORUN = true;
 
+export const DEFAULT_DEBUG = false;
+
 export const NAV_HEIGHT = '48px';
+
+export const STORAGE_KEY = 'authoring-pilingjs';
 
 export const STORAGE_KEY_PILING_STATE = 'authoring-pilingjs-piling-state';
 
@@ -72,8 +76,10 @@ export const DEFAULT_COMPONENT_APP = {
       previewAggregator,
       ...styles
     };
-
-    if (prevState) {
+    const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
+    const debug = settings ? settings.debug === 'true' : false;
+    
+    if (prevState && !debug) {
 			piling = await createLibraryFromState(domElement, {
 				...prevState,
 				...initProps,
@@ -292,7 +298,5 @@ export const INTERMEDIATE_APP_MAP = {
 export const DEFAULT_SVELTE_URL = 'https://unpkg.com/svelte@latest';
 
 export const DEFAULT_WORKERS_URL = 'workers';
-
-export const STORAGE_KEY = 'authoring-pilingjs';
 
 export const STORAGE_SAVE_DEBOUNCE = 1000; // 1 second

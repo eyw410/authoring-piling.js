@@ -1,9 +1,14 @@
 import clone from 'just-clone';
 
-import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN } from './constants';
-import { serializableWritable, loadStores } from './utils';
+import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG } from './constants';
+import { serializableWritable, loadStores, loadParametersFromUrl, urlParameter } from './utils';
 
-const prevStore = loadStores(STORAGE_KEY) || {};
+const _debug = loadParametersFromUrl().get("debug") || DEFAULT_DEBUG;
+export const debug = urlParameter(_debug);
+
+console.log(_debug);
+
+const prevStore = _debug ? {} : loadStores(STORAGE_KEY) || {};
 const _components = clone(prevStore.components || DEFAULT_COMPONENTS);
 const _selectedComponent = prevStore.selectedComponent
   ? _components.find(

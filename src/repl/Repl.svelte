@@ -14,7 +14,7 @@
   import {
     components,
     selectedComponent as selected,
-    autoRun,
+    autoRun
   } from '../stores.js';
 
   import {
