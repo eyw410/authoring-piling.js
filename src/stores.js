@@ -1,12 +1,10 @@
 import clone from 'just-clone';
 
-import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG } from './constants';
+import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG, DEFAULT_LOADWITHOUTSAVEDPILES } from './constants';
 import { serializableWritable, loadStores, loadParametersFromUrl, urlParameter } from './utils';
 
 const _debug = loadParametersFromUrl().get("debug") || DEFAULT_DEBUG;
 export const debug = urlParameter(_debug);
-
-console.log(_debug);
 
 const prevStore = _debug ? {} : loadStores(STORAGE_KEY) || {};
 const _components = clone(prevStore.components || DEFAULT_COMPONENTS);
@@ -18,6 +16,8 @@ const _selectedComponent = prevStore.selectedComponent
   ) || _components[0]
   : _components[0];
 const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
+const _loadWithoutSavedPiles = prevStore.loadWithoutSavedPiles || DEFAULT_LOADWITHOUTSAVEDPILES;
+export const loadWithoutSavedPiles = serializableWritable(_loadWithoutSavedPiles);
 
 export const components = serializableWritable(_components);
 export const selectedComponent = serializableWritable(

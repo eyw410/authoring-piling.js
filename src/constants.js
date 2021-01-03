@@ -2,6 +2,8 @@ export const DEFAULT_AUTORUN = true;
 
 export const DEFAULT_DEBUG = false;
 
+export const DEFAULT_LOADWITHOUTSAVEDPILES = false;
+
 export const NAV_HEIGHT = '48px';
 
 export const STORAGE_KEY = 'authoring-pilingjs';
@@ -39,6 +41,7 @@ export const DEFAULT_COMPONENT_APP = {
     let items;
     try {
       items = (getData || identity)(localData);
+      console.log('items', items);
     } catch (e) {
       // Either getData() is broken or it's actually a functional component
     }
@@ -78,15 +81,20 @@ export const DEFAULT_COMPONENT_APP = {
     };
     const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
     const debug = settings ? settings.debug === 'true' : false;
+    const loadWithoutSavedPiles = settings ? settings.loadWithoutSavedPiles === 'true' : false;
     
-    if (prevState && !debug) {
+    if (prevState && !debug && !loadWithoutSavedPiles) {
 			piling = await createLibraryFromState(domElement, {
 				...prevState,
 				...initProps,
       });
       piling.set('items', items);
     } else {
+      console.log('items', items);
       piling = createLibrary(domElement, { ...initProps, items });
+      if (loadWithoutSavedPiles) {
+        sessionStorage.setItem("${STORAGE_KEY}", { ...settings, loadWithoutSavedPiles: false })
+      }
     }
 
     const groupArrange = importedGroupArrange.default && isFunction(importedGroupArrange.default)
@@ -97,6 +105,9 @@ export const DEFAULT_COMPONENT_APP = {
   });
 
   onDestroy(() => {
+    const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
+    const loadWithoutSavedPiles = settings ? settings.loadWithoutSavedPiles === 'true' : false;
+    console.log('load without saved piles is ', loadWithoutSavedPiles);
     if (piling) {
       sessionStorage.setItem("${STORAGE_KEY_PILING_STATE}", JSON.stringify(piling.exportState()));
       piling.destroy();
