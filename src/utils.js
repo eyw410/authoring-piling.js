@@ -1,7 +1,7 @@
 import { get, writable } from 'svelte/store';
 import { identity } from '@flekschas/utils';
 
-import { STORAGE_KEY, STORAGE_KEY_PILING_STATE } from './constants';
+import { STORAGE_KEY } from './constants';
 
 /**
  * Read a loaded JSON file.
@@ -95,5 +95,4 @@ export const urlParameter = (initialValue, customSerializer = null) => {
 
 export const resetStores = () => {
   sessionStorage.removeItem(STORAGE_KEY);
-  sessionStorage.removeItem(STORAGE_KEY_PILING_STATE);
 };

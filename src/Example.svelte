@@ -59,7 +59,7 @@
 
   function loadExample() {
     prevPilingState.update(() => null);
-    
+
     components.update((_components) => {
       _components = [];
 

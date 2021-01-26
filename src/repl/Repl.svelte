@@ -128,23 +128,17 @@
     })
     const result = await bundler.bundle(fullCode);
     if (result && token === current_token) bundle.set(result);
-    // update selected component
-    if ($components.length === 0) {
-      // if no components, no component is selected
-      selected.update(() => null);
+    // update selected component    
+    if (!$selected) {
+      // select first component and reset editor
+      handle_select($components[0]);
     } else {
-      if (!$selected) {
-        // select first component
-        $selected.update($components[0])
-      } else {
-        // select the same component if still there, otherwise select first component
-        selected.update((() => {
-          return $components.find(el => {
-            return el.name === $selected.name && el.type === $selected.type
-            }) || $components[0];
-          }))
-        }
-      }
+      // keep the same component if still there, otherwise select first component and reset editor
+      const newComponent = $components.find(el => {
+        return el.name === $selected.name && el.type === $selected.type
+      });
+      handle_select(newComponent || $components[0]);
+    }
   }
 
   let view;
