@@ -2,13 +2,9 @@ export const DEFAULT_AUTORUN = true;
 
 export const DEFAULT_DEBUG = false;
 
-export const DEFAULT_LOADWITHOUTSAVEDPILES = false;
-
 export const NAV_HEIGHT = '48px';
 
 export const STORAGE_KEY = 'authoring-pilingjs';
-
-export const STORAGE_KEY_PILING_STATE = 'authoring-pilingjs-piling-state';
 
 export const DEFAULT_DATA = Array(9)
   .fill()
@@ -28,6 +24,7 @@ export const DEFAULT_COMPONENT_APP = {
   import * as importedAggregators from './aggregators.js';
   import * as importedStyles from './styles.js';
   import * as importedGroupArrange from './group-arrange.js';
+  import prevPiles from './piling-state.js';
 
   import localData from './data.json';
 
@@ -41,7 +38,6 @@ export const DEFAULT_COMPONENT_APP = {
     let items;
     try {
       items = (getData || identity)(localData);
-      console.log('items', items);
     } catch (e) {
       // Either getData() is broken or it's actually a functional component
     }
@@ -69,8 +65,6 @@ export const DEFAULT_COMPONENT_APP = {
       ? importedStyles.default({ domElement })
       : importedStyles.default || {};
 
-    const prevState = JSON.parse(sessionStorage.getItem("${STORAGE_KEY_PILING_STATE}"));
-
     const initProps = {
       itemRenderer,
       coverRenderer,
@@ -81,21 +75,44 @@ export const DEFAULT_COMPONENT_APP = {
     };
     const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
     const debug = settings ? settings.debug === 'true' : false;
-    const loadWithoutSavedPiles = settings ? settings.loadWithoutSavedPiles === 'true' : false;
-    
-    if (prevState && !debug && !loadWithoutSavedPiles) {
+    if (prevPiles !== null && !debug) {
+      console.log('using saved piling state');
 			piling = await createLibraryFromState(domElement, {
-				...prevState,
+				...prevPiles,
 				...initProps,
       });
       piling.set('items', items);
     } else {
-      console.log('items', items);
       piling = createLibrary(domElement, { ...initProps, items });
-      if (loadWithoutSavedPiles) {
-        sessionStorage.setItem("${STORAGE_KEY}", { ...settings, loadWithoutSavedPiles: false })
-      }
     }
+    const ignoredActions = new Set([
+      'OVERWRITE',
+      'SOFT_OVERWRITE',
+      'SET_CLICKED_PILE',
+      'SET_FOCUSED_PILES',
+      'SET_MAGNIFIED_PILES',
+    ]);
+    const createRequestIdleCallback = () => {
+      if (window.requestIdleCallback) return window.requestIdleCallback;
+      return (fn) => debounce(fn, 750);
+    };
+    const requestIdleCallback = createRequestIdleCallback();
+
+    const updateHandler = ({ action }) => {
+      if (ignoredActions.has(action.type)) return;
+    
+      const state = piling.exportState();
+
+      let bc = new BroadcastChannel(settings.tabId);
+      bc.postMessage({ type: 'update', payload: JSON.stringify(piling.exportState()) })
+    };
+    
+    const updateHandlerIdled = (...args) => {
+			requestIdleCallback(() => {
+        updateHandler(...args)
+      })
+		}
+    piling.subscribe('update', updateHandlerIdled);
 
     const groupArrange = importedGroupArrange.default && isFunction(importedGroupArrange.default)
       ? importedGroupArrange.default({ domElement, piling })
@@ -106,12 +123,7 @@ export const DEFAULT_COMPONENT_APP = {
 
   onDestroy(() => {
     const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
-    const loadWithoutSavedPiles = settings ? settings.loadWithoutSavedPiles === 'true' : false;
-    console.log('load without saved piles is ', loadWithoutSavedPiles);
-    if (piling) {
-      sessionStorage.setItem("${STORAGE_KEY_PILING_STATE}", JSON.stringify(piling.exportState()));
-      piling.destroy();
-    }
+    if (piling) piling.destroy();
   });
 </script>
 

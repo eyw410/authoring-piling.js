@@ -1,6 +1,6 @@
 import clone from 'just-clone';
 
-import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG, DEFAULT_LOADWITHOUTSAVEDPILES } from './constants';
+import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG } from './constants';
 import { serializableWritable, loadStores, loadParametersFromUrl, urlParameter } from './utils';
 
 const _debug = loadParametersFromUrl().get("debug") || DEFAULT_DEBUG;
@@ -16,8 +16,8 @@ const _selectedComponent = prevStore.selectedComponent
   ) || _components[0]
   : _components[0];
 const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
-const _loadWithoutSavedPiles = prevStore.loadWithoutSavedPiles || DEFAULT_LOADWITHOUTSAVEDPILES;
-export const loadWithoutSavedPiles = serializableWritable(_loadWithoutSavedPiles);
+
+const _tabId = prevStore.tabId || null;
 
 export const components = serializableWritable(_components);
 export const selectedComponent = serializableWritable(
@@ -31,3 +31,8 @@ export const selectedComponent = serializableWritable(
   }
 );
 export const autoRun = serializableWritable(_autoRun);
+
+export const tabId = serializableWritable(_tabId);
+
+const _prevPilingState = prevStore.prevPilingState || null;
+export const prevPilingState = serializableWritable(_prevPilingState);

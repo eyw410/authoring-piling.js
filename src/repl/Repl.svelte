@@ -1,5 +1,5 @@
 <script>
-  import { setContext, getContext, createEventDispatcher } from 'svelte';
+  import { setContext, getContext, createEventDispatcher, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import SplitPane from './SplitPane.svelte';
   import ComponentSelector from './Input/ComponentSelector.svelte';
@@ -13,8 +13,10 @@
 
   import {
     components,
+    debug,
     selectedComponent as selected,
-    autoRun
+    autoRun,
+    prevPilingState
   } from '../stores.js';
 
   import {
@@ -117,8 +119,32 @@
   let current_token;
   export async function rebundle() {
     const token = (current_token = {});
-    const result = await bundler.bundle($components);
+    // bundle components along with previous piling state (unless in debug mode)
+    const fullCode = [...$components];
+    fullCode.push({
+      type: 'js',
+      name: 'piling-state',
+      source: `const prevPilingState = ${$debug ? null : $prevPilingState};export default prevPilingState;`
+    })
+    const result = await bundler.bundle(fullCode);
     if (result && token === current_token) bundle.set(result);
+    // update selected component
+    if ($components.length === 0) {
+      // if no components, no component is selected
+      selected.update(() => null);
+    } else {
+      if (!$selected) {
+        // select first component
+        $selected.update($components[0])
+      } else {
+        // select the same component if still there, otherwise select first component
+        selected.update((() => {
+          return $components.find(el => {
+            return el.name === $selected.name && el.type === $selected.type
+            }) || $components[0];
+          }))
+        }
+      }
   }
 
   let view;

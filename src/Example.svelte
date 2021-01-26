@@ -3,8 +3,7 @@
   import Card, { PrimaryAction, Media, MediaContent } from '@smui/card';
   import clone from 'just-clone';
 
-  import { components, loadWithoutSavedPiles } from './stores';
-  import { clearPilingState } from './utils';
+  import { components, prevPilingState } from './stores';
 
   import { DEFAULT_COMPONENTS_NAMED } from './constants';
 
@@ -59,8 +58,8 @@
   }
 
   function loadExample() {
-    clearPilingState();
-    loadWithoutSavedPiles.update(() => true);
+    prevPilingState.update(() => null);
+    
     components.update((_components) => {
       _components = [];
 
@@ -75,7 +74,7 @@
       });
 
       return _components;
-    });    
+    });
     // Needs to trigger re-run
     close();
     refreshHandler();

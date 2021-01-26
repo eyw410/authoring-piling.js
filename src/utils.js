@@ -97,7 +97,3 @@ export const resetStores = () => {
   sessionStorage.removeItem(STORAGE_KEY);
   sessionStorage.removeItem(STORAGE_KEY_PILING_STATE);
 };
-
-export const clearPilingState = () => {
-  sessionStorage.removeItem(STORAGE_KEY_PILING_STATE);
-};
