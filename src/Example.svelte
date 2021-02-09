@@ -58,7 +58,7 @@
   }
 
   function loadExample() {
-    prevPilingState.update(() => null);
+    prevPilingState.set(null);
 
     components.update((_components) => {
       _components = [];
@@ -82,7 +82,6 @@
 
   $: if (userAndGistId) {
     Promise.all(Object.keys(fileParsers).map(f => {
-      // return fetch('https://gist.githubusercontent.com/flekschas/81e7fb4f9cf5946f12639c383af97dc6/raw/renderers.js', { mode: 'no-cors' })
       return fetch(`https://gist.githubusercontent.com/${userAndGistId}/raw/${f}`)
               .then(async (response) => {
                 const content = await response.text();
@@ -93,7 +92,7 @@
               })
     }))
     .then((responses) => {
-      // need to check whether each thing worked
+      // parse files that loaded correctly
       parseFiles(responses.filter(({ status }) => status === 200));
     })
     .catch((error) => {

@@ -72,7 +72,7 @@
     });
 
     // check for tab ID
-    if (!$tabId) tabId.update(() => Math.random().toString(20).substr(2, 8));
+    if (!$tabId) console.log('somehow no tab id?');
     bc = new BroadcastChannel($tabId);
     bc.onmessage = function (m) {
       const { type, payload } = m.data;

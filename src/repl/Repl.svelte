@@ -120,13 +120,14 @@
   export async function rebundle() {
     const token = (current_token = {});
     // bundle components along with previous piling state (unless in debug mode)
-    const fullCode = [...$components];
-    fullCode.push({
+    const result = await bundler.bundle([
+      ...$components,
+      {
       type: 'js',
       name: 'piling-state',
       source: `const prevPilingState = ${$debug ? null : $prevPilingState};export default prevPilingState;`
-    })
-    const result = await bundler.bundle(fullCode);
+      }
+    ]);
     if (result && token === current_token) bundle.set(result);
     // update selected component    
     if (!$selected) {

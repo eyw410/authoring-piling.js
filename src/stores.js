@@ -17,7 +17,7 @@ const _selectedComponent = prevStore.selectedComponent
   : _components[0];
 const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
 
-const _tabId = prevStore.tabId || null;
+const _tabId = prevStore.tabId || Math.random().toString(20).substr(2, 8);
 
 export const components = serializableWritable(_components);
 export const selectedComponent = serializableWritable(

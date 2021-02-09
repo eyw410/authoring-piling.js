@@ -74,7 +74,7 @@ export const DEFAULT_COMPONENT_APP = {
       ...styles
     };
     const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
-    const debug = settings ? settings.debug === 'true' : false;
+    const debug = settings && settings.debug === 'true';
     if (prevPiles !== null && !debug) {
       console.log('using saved piling state');
 			piling = await createLibraryFromState(domElement, {
@@ -122,7 +122,6 @@ export const DEFAULT_COMPONENT_APP = {
   });
 
   onDestroy(() => {
-    const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
     if (piling) piling.destroy();
   });
 </script>
