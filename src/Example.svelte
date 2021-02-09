@@ -7,7 +7,7 @@
 
   import { DEFAULT_COMPONENTS_NAMED } from './constants';
 
-  export let gistId = '';
+  export let userAndGistId = '';
   export let width = '10rem';
   export let refreshHandler;
 
@@ -80,23 +80,27 @@
     refreshHandler();
   }
 
-  $: if (gistId) {
-    fetch(`https://api.github.com/gists/${gistId}`)
-      .then(async (response) => {
-        const body = await response.json();
-        return { body, status: response.status }
-      })
-      .then(({ body, status }) => {
-        if (status !== 200) {
-          console.warn('Request unsuccessful', body.message);
-        } else {
-          title = body.description;
-          parseFiles(body.files);
-        }
-      })
-      .catch((error) => {
-        console.warn('Request failed', error);
-      });
+  $: if (userAndGistId) {
+    Promise.all(Object.keys(fileParsers).map(f => {
+      // return fetch('https://gist.githubusercontent.com/flekschas/81e7fb4f9cf5946f12639c383af97dc6/raw/renderers.js', { mode: 'no-cors' })
+      return fetch(`https://gist.githubusercontent.com/${userAndGistId}/raw/${f}`)
+              .then(async (response) => {
+                const content = await response.text();
+                return { filename: f, content, status: response.status }
+              })
+              .catch((error) => {
+                return { filename: f, status: 404 }
+              })
+    }))
+    .then((responses) => {
+      // need to check whether each thing worked
+      parseFiles(responses.filter(({ status }) => status === 200));
+    })
+    .catch((error) => {
+      // something went wrong
+      console.warn('Request failed', error);
+    });
+    
   }
 </script>
 
