@@ -1,7 +1,8 @@
 import clone from 'just-clone';
+import { writable, readable } from 'svelte/store'
 
 import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG } from './constants';
-import { serializableWritable, loadStores, loadParametersFromUrl, urlParameter } from './utils';
+import { makeSerializable, loadStores, loadParametersFromUrl, urlParameter } from './utils';
 
 const _debug = loadParametersFromUrl().get("debug") || DEFAULT_DEBUG;
 export const debug = urlParameter(_debug);
@@ -19,9 +20,9 @@ const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
 
 const _tabId = prevStore.tabId || Math.random().toString(20).substr(2, 8);
 
-export const components = serializableWritable(_components);
-export const selectedComponent = serializableWritable(
-  _selectedComponent,
+export const components = makeSerializable(writable(_components));
+export const selectedComponent = makeSerializable(writable(
+  _selectedComponent),
   (value) => {
     const clonedValue = clone(value);
     // We only need to store the name and extension as the source is already
@@ -30,9 +31,9 @@ export const selectedComponent = serializableWritable(
     return clonedValue;
   }
 );
-export const autoRun = serializableWritable(_autoRun);
+export const autoRun = makeSerializable(writable(_autoRun));
 
-export const tabId = serializableWritable(_tabId);
+export const tabId = makeSerializable(readable(_tabId));
 
 const _prevPilingState = prevStore.prevPilingState || null;
-export const prevPilingState = serializableWritable(_prevPilingState);
+export const prevPilingState = makeSerializable(writable(_prevPilingState));

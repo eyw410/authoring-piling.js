@@ -55,16 +55,10 @@ export const saveStores = (serializedStores) => {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(serializedStores));
 };
 
-export const serializableWritable = (initialValue, customSerializer = null) => {
-  const store = writable(initialValue);
-  const serialize = () => (customSerializer || identity)(get(store));
-
-  return {
-    subscribe: store.subscribe,
-    set: store.set,
-    update: store.update,
-    serialize,
-  };
+export const makeSerializable = (store, customSerializer = null) => {
+  // makeSerializable(writable(initValue));
+  store.serialize = () => (customSerializer || identity)(get(store));
+  return store;
 };
 
 export const loadParametersFromUrl = () => new URLSearchParams(window.location.search);

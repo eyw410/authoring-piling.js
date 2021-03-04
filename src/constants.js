@@ -25,7 +25,6 @@ export const DEFAULT_COMPONENT_APP = {
   import * as importedStyles from './styles.js';
   import * as importedGroupArrange from './group-arrange.js';
   import prevPiles from './piling-state.js';
-
   import localData from './data.json';
 
   const isFunction = f => !!(f && f.constructor && f.call && f.apply);
@@ -33,7 +32,7 @@ export const DEFAULT_COMPONENT_APP = {
   let domElement;
   let piling;
   let hasInitialized = false;
-
+  
   onMount(async () => {
     let items;
     try {
@@ -52,8 +51,8 @@ export const DEFAULT_COMPONENT_APP = {
       ? importedRenderers.default({ domElement })
       : importedRenderers;
     const itemRenderer = renderers.itemRenderer;
-    const coverRenderer = renderers.coverRenderer || null;
-    const previewRenderer = renderers.previewRenderer || null;
+    const coverRenderer = renderers.coverRenderer || renderers.itemRenderer;
+    const previewRenderer = renderers.previewRenderer || renderers.itemRenderer;
 
     const aggregators = importedAggregators.default && isFunction(importedAggregators.default)
       ? importedAggregators.default({ domElement })
@@ -65,7 +64,7 @@ export const DEFAULT_COMPONENT_APP = {
       ? importedStyles.default({ domElement })
       : importedStyles.default || {};
 
-    const initProps = {
+    const replProps = {
       itemRenderer,
       coverRenderer,
       previewRenderer,
@@ -73,17 +72,17 @@ export const DEFAULT_COMPONENT_APP = {
       previewAggregator,
       ...styles
     };
+    // compare previous styles with new ones and try to null out
     const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
     const debug = settings && settings.debug === 'true';
     if (prevPiles !== null && !debug) {
-      console.log('using saved piling state');
 			piling = await createLibraryFromState(domElement, {
 				...prevPiles,
-				...initProps,
-      });
+				...replProps,
+      }, { debug: true });
       piling.set('items', items);
     } else {
-      piling = createLibrary(domElement, { ...initProps, items });
+      piling = createLibrary(domElement, { ...replProps, items });
     }
     const ignoredActions = new Set([
       'OVERWRITE',
@@ -100,7 +99,6 @@ export const DEFAULT_COMPONENT_APP = {
 
     const updateHandler = ({ action }) => {
       if (ignoredActions.has(action.type)) return;
-    
       const state = piling.exportState();
 
       let bc = new BroadcastChannel(settings.tabId);

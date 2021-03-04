@@ -58,6 +58,7 @@
 
     historyMap.clear();
     module_editor.clearHistory();
+    handle_select($components[0]);
 
     initTop();
   }
@@ -138,7 +139,9 @@
       const newComponent = $components.find(el => {
         return el.name === $selected.name && el.type === $selected.type
       });
-      handle_select(newComponent || $components[0]);
+      if ($selected !== newComponent) {
+        handle_select(newComponent || $components[0]);
+      };
     }
   }
 
