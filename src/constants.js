@@ -1,10 +1,11 @@
 export const DEFAULT_AUTORUN = true;
 
+export const DEFAULT_DEBUG = false;
 export const DEFAULT_ALWAYS_PRESERVE_PILES = true;
 
 export const NAV_HEIGHT = '48px';
 
-export const STORAGE_KEY_PILING_STATE = 'authoring-pilingjs-piling-state';
+export const STORAGE_KEY = 'authoring-pilingjs';
 
 export const DEFAULT_DATA = Array(9)
   .fill()
@@ -24,7 +25,7 @@ export const DEFAULT_COMPONENT_APP = {
   import * as importedAggregators from './aggregators.js';
   import * as importedStyles from './styles.js';
   import * as importedGroupArrange from './group-arrange.js';
-
+  import prevPiles from './piling-state.js';
   import localData from './data.json';
 
   const isFunction = f => !!(f && f.constructor && f.call && f.apply);
@@ -32,7 +33,7 @@ export const DEFAULT_COMPONENT_APP = {
   let domElement;
   let piling;
   let hasInitialized = false;
-
+  
   onMount(async () => {
     let items;
     try {
@@ -47,31 +48,24 @@ export const DEFAULT_COMPONENT_APP = {
 
     items = await Promise.resolve(items);
 
-    const renderers = importedRenderers.default && isFunction(importedRenderers.default)
-      ? importedRenderers.default({ domElement })
-      : importedRenderers;
-    const itemRenderer = renderers.itemRenderer;
-    const coverRenderer = renderers.coverRenderer || null;
-    const previewRenderer = renderers.previewRenderer || null;
-
     const aggregators = importedAggregators.default && isFunction(importedAggregators.default)
       ? importedAggregators.default({ domElement })
       : importedAggregators;
     const coverAggregator = aggregators.coverAggregator || null;
     const previewAggregator = aggregators.previewAggregator || null;
+    
+    const renderers = importedRenderers.default && isFunction(importedRenderers.default)
+      ? importedRenderers.default({ domElement })
+      : importedRenderers;
+    const itemRenderer = renderers.itemRenderer;
+    const coverRenderer = coverAggregator ? renderers.coverRenderer || renderers.itemRenderer : renderers.coverRenderer  || null;
+    const previewRenderer = previewAggregator ? renderers.previewRenderer || renderers.itemRenderer : renderers.previewRenderer || null;
 
     const styles = importedStyles.default && isFunction(importedStyles.default)
       ? importedStyles.default({ domElement })
       : importedStyles.default || {};
 
-    let prevState = JSON.parse(sessionStorage.getItem("${STORAGE_KEY_PILING_STATE}"));
-    if (sessionStorage.getItem("resetPilesOnce") || sessionStorage.getItem("authoring-pilingjs") && JSON.parse(sessionStorage.getItem("authoring-pilingjs")).alwaysPreservePiles === false) {
-      sessionStorage.removeItem("${STORAGE_KEY_PILING_STATE}");
-      sessionStorage.removeItem("resetPilesOnce");
-      prevState = null;
-		}
-
-    const initProps = {
+    const replProps = {
       itemRenderer,
       coverRenderer,
       previewRenderer,
@@ -79,16 +73,46 @@ export const DEFAULT_COMPONENT_APP = {
       previewAggregator,
       ...styles
     };
-
-    if (prevState) {
-			piling = await createLibraryFromState(domElement, {
-				...prevState,
-				...initProps,
-      });
+    // compare previous styles with new ones and try to null out
+    const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
+    const debug = settings && settings.debug === 'true';
+    if (prevPiles !== null && !debug && !sessionStorage.getItem("resetPilesOnce") && settings.alwaysPreservePiles) {
+      piling = await createLibraryFromState(domElement, {
+        ...prevPiles,
+        ...replProps,
+      }, { debug: true });
       piling.set('items', items);
     } else {
-      piling = createLibrary(domElement, { ...initProps, items });
+      piling = createLibrary(domElement, { ...replProps, items });
+      sessionStorage.removeItem("resetPilesOnce");
     }
+    const ignoredActions = new Set([
+      'OVERWRITE',
+      'SOFT_OVERWRITE',
+      'SET_CLICKED_PILE',
+      'SET_FOCUSED_PILES',
+      'SET_MAGNIFIED_PILES',
+    ]);
+    const createRequestIdleCallback = () => {
+      if (window.requestIdleCallback) return window.requestIdleCallback;
+      return (fn) => debounce(fn, 750);
+    };
+    const requestIdleCallback = createRequestIdleCallback();
+
+    const updateHandler = ({ action }) => {
+      if (ignoredActions.has(action.type)) return;
+      const state = piling.exportState();
+
+      let bc = new BroadcastChannel(settings.tabId);
+      bc.postMessage({ type: 'update', payload: JSON.stringify(piling.exportState()) })
+    };
+    
+    const updateHandlerIdled = (...args) => {
+      requestIdleCallback(() => {
+        updateHandler(...args)
+      })
+    }
+    piling.subscribe('update', updateHandlerIdled);
 
     const groupArrange = importedGroupArrange.default && isFunction(importedGroupArrange.default)
       ? importedGroupArrange.default({ domElement, piling })
@@ -98,10 +122,7 @@ export const DEFAULT_COMPONENT_APP = {
   });
 
   onDestroy(() => {
-    if (piling) {
-      sessionStorage.setItem("${STORAGE_KEY_PILING_STATE}", JSON.stringify(piling.exportState()));
-      piling.destroy();
-    }
+    if (piling) piling.destroy();
   });
 </script>
 
@@ -299,7 +320,5 @@ export const INTERMEDIATE_APP_MAP = {
 export const DEFAULT_SVELTE_URL = 'https://unpkg.com/svelte@latest';
 
 export const DEFAULT_WORKERS_URL = 'workers';
-
-export const STORAGE_KEY = 'authoring-pilingjs';
 
 export const STORAGE_SAVE_DEBOUNCE = 1000; // 1 second

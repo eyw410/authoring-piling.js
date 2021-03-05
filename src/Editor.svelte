@@ -8,7 +8,7 @@
   import Error from './Error.svelte';
   import Warning from './Warning.svelte';
 
-  import { components } from './stores';
+  import { debug, tabId, components, prevPilingState } from './stores';
 
   import {
     DEFAULT_SVELTE_URL,
@@ -37,6 +37,7 @@
 
   let container;
   let repl;
+  let bc;
   export const rebundle = () => {
     if (repl && repl.rebundle) repl.rebundle();
   };
@@ -69,12 +70,25 @@
         openLoadDataModal,
       },
     });
+
+    // check for tab ID
+    if (!$tabId) console.log('somehow no tab id?');
+    bc = new BroadcastChannel($tabId);
+    bc.onmessage = function (m) {
+      const { type, payload } = m.data;
+      switch (type) {
+        case "update":
+          if (!$debug) prevPilingState.update(() => payload);
+          break;
+        }
+     }
   });
 
   onDestroy(() => {
     if (repl) {
       repl.$destroy();
     }
+    bc.close();
   });
 
   async function updateOrientation(w) {
@@ -95,6 +109,7 @@
     // Manually rebundle + reload the editor text
     repl.refresh();
   }
+  $: components && repl && repl.refresh();
 
   function reset() {
     repl.update(clone(replData));

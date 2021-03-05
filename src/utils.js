@@ -32,9 +32,9 @@ export const readJsonFile = (file) => {
 export const serializeStores = (stores) =>
   stores
     ? Object.entries(stores).reduce((obj, [name, store]) => {
-        obj[name] = store.serialize();
-        return obj;
-      }, {})
+      obj[name] = store.serialize();
+      return obj;
+    }, {})
     : null;
 
 export const loadStores = (storageKey) => {
@@ -55,14 +55,34 @@ export const saveStores = (serializedStores) => {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(serializedStores));
 };
 
-export const serializableWritable = (initialValue, customSerializer = null) => {
+export const makeSerializable = (store, customSerializer = null) => {
+  // makeSerializable(writable(initValue));
+  store.serialize = () => (customSerializer || identity)(get(store));
+  return store;
+};
+
+export const loadParametersFromUrl = () => new URLSearchParams(window.location.search);
+
+export const urlParameter = (initialValue, customSerializer = null) => {
   const store = writable(initialValue);
   const serialize = () => (customSerializer || identity)(get(store));
-
+  const setUrlParameter = (newValue) => {
+    // add parameter to URL when it is set
+    let queryParams = new URLSearchParams(window.location.search);
+    queryParams.set(Object.keys(initialValue)[0], newValue);
+    history.replaceState(null, null, "?" + queryParams.toString());
+    store.set(newValue);
+  }
+  const updateUrlParameter = (fn) => {
+    let queryParams = new URLSearchParams(window.location.search);
+    queryParams.set(Object.keys(initialValue)[0], newValue);
+    history.replaceState(null, null, "?" + queryParams.toString());
+    store.update(fn);
+  }
   return {
     subscribe: store.subscribe,
-    set: store.set,
-    update: store.update,
+    set: setUrlParameter,
+    update: updateUrlParameter,
     serialize,
   };
 };

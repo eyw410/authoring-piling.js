@@ -1,5 +1,5 @@
 <script>
-  import { setContext, getContext, createEventDispatcher } from 'svelte';
+  import { setContext, getContext, createEventDispatcher, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import SplitPane from './SplitPane.svelte';
   import ComponentSelector from './Input/ComponentSelector.svelte';
@@ -13,8 +13,10 @@
 
   import {
     components,
+    debug,
     selectedComponent as selected,
     autoRun,
+    prevPilingState
   } from '../stores.js';
 
   import {
@@ -56,6 +58,7 @@
 
     historyMap.clear();
     module_editor.clearHistory();
+    handle_select($components[0]);
 
     initTop();
   }
@@ -117,8 +120,29 @@
   let current_token;
   export async function rebundle() {
     const token = (current_token = {});
-    const result = await bundler.bundle($components);
+    // bundle components along with previous piling state (unless in debug mode)
+    const result = await bundler.bundle([
+      ...$components,
+      {
+      type: 'js',
+      name: 'piling-state',
+      source: `const prevPilingState = ${$debug ? null : $prevPilingState};export default prevPilingState;`
+      }
+    ]);
     if (result && token === current_token) bundle.set(result);
+    // update selected component    
+    if (!$selected) {
+      // select first component and reset editor
+      handle_select($components[0]);
+    } else {
+      // keep the same component if still there, otherwise select first component and reset editor
+      const newComponent = $components.find(el => {
+        return el.name === $selected.name && el.type === $selected.type
+      });
+      if ($selected !== newComponent) {
+        handle_select(newComponent || $components[0]);
+      };
+    }
   }
 
   let view;
