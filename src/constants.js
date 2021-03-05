@@ -53,7 +53,7 @@ export const DEFAULT_COMPONENT_APP = {
       : importedAggregators;
     const coverAggregator = aggregators.coverAggregator || null;
     const previewAggregator = aggregators.previewAggregator || null;
-		
+    
     const renderers = importedRenderers.default && isFunction(importedRenderers.default)
       ? importedRenderers.default({ domElement })
       : importedRenderers;
@@ -64,13 +64,6 @@ export const DEFAULT_COMPONENT_APP = {
     const styles = importedStyles.default && isFunction(importedStyles.default)
       ? importedStyles.default({ domElement })
       : importedStyles.default || {};
-
-    let prevState = JSON.parse(sessionStorage.getItem("${STORAGE_KEY_PILING_STATE}"));
-    if (sessionStorage.getItem("resetPilesOnce") || sessionStorage.getItem("authoring-pilingjs") && JSON.parse(sessionStorage.getItem("authoring-pilingjs")).alwaysPreservePiles === false) {
-      sessionStorage.removeItem("${STORAGE_KEY_PILING_STATE}");
-      sessionStorage.removeItem("resetPilesOnce");
-      prevState = null;
-		}
 
     const replProps = {
       itemRenderer,
@@ -83,14 +76,15 @@ export const DEFAULT_COMPONENT_APP = {
     // compare previous styles with new ones and try to null out
     const settings = JSON.parse(sessionStorage.getItem("${STORAGE_KEY}"));
     const debug = settings && settings.debug === 'true';
-    if (prevPiles !== null && !debug) {
-			piling = await createLibraryFromState(domElement, {
-				...prevPiles,
-				...replProps,
+    if (prevPiles !== null && !debug && !sessionStorage.getItem("resetPilesOnce") && settings.alwaysPreservePiles) {
+      piling = await createLibraryFromState(domElement, {
+        ...prevPiles,
+        ...replProps,
       }, { debug: true });
       piling.set('items', items);
     } else {
       piling = createLibrary(domElement, { ...replProps, items });
+      sessionStorage.removeItem("resetPilesOnce");
     }
     const ignoredActions = new Set([
       'OVERWRITE',
@@ -114,10 +108,10 @@ export const DEFAULT_COMPONENT_APP = {
     };
     
     const updateHandlerIdled = (...args) => {
-			requestIdleCallback(() => {
+      requestIdleCallback(() => {
         updateHandler(...args)
       })
-		}
+    }
     piling.subscribe('update', updateHandlerIdled);
 
     const groupArrange = importedGroupArrange.default && isFunction(importedGroupArrange.default)

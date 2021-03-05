@@ -60,7 +60,7 @@
     <Item ripple={false}>
       <Text>Preserve piling state on code changes</Text>
       <Meta>
-        <Switch bind:checked={$alwaysPreservePiles} color="secondary" />
+        <Switch bind:checked={$alwaysPreservePiles} on:change={runHandler} color="secondary" />
       </Meta>
     </Item>
     <Separator />

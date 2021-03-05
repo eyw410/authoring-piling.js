@@ -17,7 +17,7 @@ const _selectedComponent = prevStore.selectedComponent
   ) || _components[0]
   : _components[0];
 const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
-const _alwaysPreservePiles = prevStore.alwaysPreservePiles || DEFAULT_ALWAYS_PRESERVE_PILES;
+const _alwaysPreservePiles = prevStore.alwaysPreservePiles === undefined ? DEFAULT_ALWAYS_PRESERVE_PILES : prevStore.alwaysPreservePiles;
 
 const _tabId = prevStore.tabId || Math.random().toString(20).substr(2, 8);
 
