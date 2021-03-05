@@ -47,18 +47,18 @@ export const DEFAULT_COMPONENT_APP = {
 
     items = await Promise.resolve(items);
 
-    const renderers = importedRenderers.default && isFunction(importedRenderers.default)
-      ? importedRenderers.default({ domElement })
-      : importedRenderers;
-    const itemRenderer = renderers.itemRenderer;
-    const coverRenderer = renderers.coverRenderer || renderers.itemRenderer;
-    const previewRenderer = renderers.previewRenderer || renderers.itemRenderer;
-
     const aggregators = importedAggregators.default && isFunction(importedAggregators.default)
       ? importedAggregators.default({ domElement })
       : importedAggregators;
     const coverAggregator = aggregators.coverAggregator || null;
     const previewAggregator = aggregators.previewAggregator || null;
+		
+    const renderers = importedRenderers.default && isFunction(importedRenderers.default)
+      ? importedRenderers.default({ domElement })
+      : importedRenderers;
+    const itemRenderer = renderers.itemRenderer;
+    const coverRenderer = coverAggregator ? renderers.coverRenderer || renderers.itemRenderer : renderers.coverRenderer  || null;
+    const previewRenderer = previewAggregator ? renderers.previewRenderer || renderers.itemRenderer : renderers.previewRenderer || null;
 
     const styles = importedStyles.default && isFunction(importedStyles.default)
       ? importedStyles.default({ domElement })
