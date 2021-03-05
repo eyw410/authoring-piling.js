@@ -1,6 +1,7 @@
 export const DEFAULT_AUTORUN = true;
 
 export const DEFAULT_DEBUG = false;
+export const DEFAULT_ALWAYS_PRESERVE_PILES = true;
 
 export const NAV_HEIGHT = '48px';
 
@@ -63,6 +64,13 @@ export const DEFAULT_COMPONENT_APP = {
     const styles = importedStyles.default && isFunction(importedStyles.default)
       ? importedStyles.default({ domElement })
       : importedStyles.default || {};
+
+    let prevState = JSON.parse(sessionStorage.getItem("${STORAGE_KEY_PILING_STATE}"));
+    if (sessionStorage.getItem("resetPilesOnce") || sessionStorage.getItem("authoring-pilingjs") && JSON.parse(sessionStorage.getItem("authoring-pilingjs")).alwaysPreservePiles === false) {
+      sessionStorage.removeItem("${STORAGE_KEY_PILING_STATE}");
+      sessionStorage.removeItem("resetPilesOnce");
+      prevState = null;
+		}
 
     const replProps = {
       itemRenderer,

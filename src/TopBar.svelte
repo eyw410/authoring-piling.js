@@ -2,10 +2,11 @@
   import { getContext, createEventDispatcher } from 'svelte';
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
   import Fab, { Label, Icon } from '@smui/fab';
+  import List, {Item, Text} from '@smui/list';
   import Examples from './Examples.svelte';
   import Import from './Import.svelte';
 
-  import { autoRun } from './stores';
+  import { autoRun, alwaysPreservePiles } from './stores';
 
   import { NAV_HEIGHT } from './constants.js';
   import Settings from './Settings.svelte';
@@ -19,7 +20,7 @@
 
   // Settings Modal
   function openSettingsHandler() {
-    openModal(Settings);
+    openModal(Settings, { runHandler });
   }
 
   let dense = true;
@@ -27,6 +28,7 @@
   let variant = 'standard';
   let collapsed = false;
   let title = 'Piling.js Authoring';
+  let menu;
 
   const open = (Component, props = {}, styles = {}) => () =>
     openModal(Component, props, styles);

@@ -1,7 +1,7 @@
 import clone from 'just-clone';
 import { writable, readable } from 'svelte/store'
 
-import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG } from './constants';
+import { STORAGE_KEY, DEFAULT_COMPONENTS, DEFAULT_AUTORUN, DEFAULT_DEBUG, DEFAULT_ALWAYS_PRESERVE_PILES } from './constants';
 import { makeSerializable, loadStores, loadParametersFromUrl, urlParameter } from './utils';
 
 const _debug = loadParametersFromUrl().get("debug") || DEFAULT_DEBUG;
@@ -17,6 +17,7 @@ const _selectedComponent = prevStore.selectedComponent
   ) || _components[0]
   : _components[0];
 const _autoRun = prevStore.autoRun || DEFAULT_AUTORUN;
+const _alwaysPreservePiles = prevStore.alwaysPreservePiles || DEFAULT_ALWAYS_PRESERVE_PILES;
 
 const _tabId = prevStore.tabId || Math.random().toString(20).substr(2, 8);
 
@@ -37,3 +38,5 @@ export const tabId = makeSerializable(readable(_tabId));
 
 const _prevPilingState = prevStore.prevPilingState || null;
 export const prevPilingState = makeSerializable(writable(_prevPilingState));
+
+export const alwaysPreservePiles = makeSerializable(writable(_alwaysPreservePiles));
