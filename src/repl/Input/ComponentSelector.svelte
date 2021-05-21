@@ -17,7 +17,7 @@
   let editing = null;
 
   const cleanTitle = title => {
-    return title.split('-')
+    return title === '' ? '' : title.split('-')
       .map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
       .join(' ')
   }
