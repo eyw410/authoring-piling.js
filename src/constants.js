@@ -647,7 +647,7 @@ export const DEFAULT_COMPONENT_FIELD = {
 				if (field.setter) field.setter(null)
 				else piling.set(field.propName, null);
 			}
-			valueText = currentValue;
+			if (currentValue) valueText = currentValue;
 		}
 // 			if (field.setter) field.setter(currentValue)
 // 			if (piling && field.propName) piling.set(field.propName, currentValue);
@@ -941,7 +941,7 @@ export const DEFAULT_COMPONENT_INPUT = {
 	let input;
 </script>
 
-<input bind:this={input} id={field.id} {type} value={currentValue} class={isRange ? "range-slider" : ""} min={!Number.isNaN(+field.min) && +field.min} max={!Number.isNaN(+field.max) && +field.max} step={!Number.isNaN(+field.numSteps) && (+field.max - +field.min) / +field.numSteps} on:change on:input={handleInput} />`
+<input bind:this={input} id={field.id} {type} value={currentValue} class={isRange ? "range-slider" : ""} min={!Number.isNaN(+field.min) && +field.min} max={!Number.isNaN(+field.max) && +field.max} step={!Number.isNaN(+field.numSteps) && (+field.max - +field.min) / +field.numSteps} on:change={handleInput} />`
 };
 
 export const DEFAULT_COMPONENT_LISTENERS = {
