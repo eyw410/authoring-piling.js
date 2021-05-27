@@ -1,27 +1,15 @@
-*Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+<!-- *Looking for a shareable component template? Go here [sveltejs/component-template](https://github.com/sveltejs/component-template)* -->
 
----
+# Authoring Piling Tool
 
-# svelte app
-
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
-
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
-
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
-
+This tool was designed to convert [Piling.js](https://github.com/flekschas/piling.js), a programming library designed to visualize small-multiple data, into an end-user library that supports developing and exploring by beginners, while maintaining the flexibilities and capabilities of the original library for experts. This project allows users to load piling project examples, upload their own data into the example projects, and develop their own piling interfaces.
 
 ## Get started
 
 Install the dependencies...
 
 ```bash
-cd svelte-app
+cd authoring-piling.js
 npm install
 ```
 
@@ -31,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+Navigate to [localhost:5000](http://localhost:5000). You should see the app running. Edit a component file in `src`, save it, and reload the page to see your changes.
 
 By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
 
@@ -45,6 +33,19 @@ npm run build
 ```
 
 You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+
+
+<!--
+This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+
+To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+
+```bash
+npx degit sveltejs/template svelte-app
+cd svelte-app
+```
+
+*Note that you will need to have [Node.js](https://nodejs.org) installed.*
 
 
 ## Single-page app mode
@@ -91,3 +92,4 @@ Then, from within your project folder:
 npm run build
 surge public my-project.surge.sh
 ```
+ -->
